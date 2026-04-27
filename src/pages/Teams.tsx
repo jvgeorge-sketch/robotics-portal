@@ -84,9 +84,6 @@ export default function Teams() {
     ])
 
     // Count active tasks per member
-    const activeTasks = ((taskRows || []) as TaskSummary[]).filter(
-      t => t.status !== 'done'
-    )
     const tasksByAssignee: Record<string, number> = {}
     // We don't have assigned_to here — fetch separately
     const { data: assignedRows } = await supabase

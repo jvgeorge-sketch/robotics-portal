@@ -19,7 +19,6 @@ interface TeamRow {
 }
 
 const RANK_BG = ['bg-yellow-400', 'bg-slate-300', 'bg-amber-600']
-const RANK_LABEL = ['#1', '#2', '#3']
 
 function initials(name: string) {
   return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
