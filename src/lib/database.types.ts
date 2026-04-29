@@ -1,7 +1,6 @@
-// Auto-generated types for the Supabase schema.
-// Re-run `supabase gen types typescript` after schema changes.
+// Database types — custom auth (no Supabase Auth dependency)
 
-export type UserRole = 'admin' | 'project_manager' | 'team_lead' | 'student' | 'viewer'
+export type UserRole = 'instructor' | 'team_lead' | 'student'
 export type TaskStatus = 'backlog' | 'ready' | 'in_progress' | 'review' | 'done'
 export type TaskPriority = 'low' | 'medium' | 'high' | 'critical'
 
@@ -47,7 +46,6 @@ export interface Database {
     Views: Record<string, never>
     Functions: Record<string, never>
     Enums: {
-      user_role: UserRole
       task_status: TaskStatus
       task_priority: TaskPriority
     }
@@ -55,14 +53,17 @@ export interface Database {
 }
 
 export interface Profile {
-  id: string               // matches auth.users.id
-  email: string
+  id: string               // our own UUID (not tied to auth.users)
+  username: string         // unique login handle
+  password_hash: string    // SHA-256 hex — never render in UI
   full_name: string
+  email: string | null     // optional contact email
   avatar_url: string | null
   role: UserRole
   total_points: number
   season_points: number
   daily_streak: number
+  is_active: boolean
   created_at: string
 }
 
@@ -70,9 +71,9 @@ export interface Team {
   id: string
   name: string
   description: string | null
-  color: string            // hex e.g. '#3b82f6'
-  icon: string             // material symbol name
-  lead_id: string | null   // profile.id
+  color: string
+  icon: string
+  lead_id: string | null
   created_at: string
 }
 
@@ -90,7 +91,7 @@ export interface Task {
   status: TaskStatus
   priority: TaskPriority
   points_value: number
-  team_id: string | null   // null = open pool task
+  team_id: string | null
   assigned_to: string | null
   created_by: string
   claimed_at: string | null
@@ -107,7 +108,7 @@ export interface TimeLog {
   user_id: string
   started_at: string
   stopped_at: string | null
-  duration_secs: number | null  // populated on stop
+  duration_secs: number | null
 }
 
 export type BadgeType =

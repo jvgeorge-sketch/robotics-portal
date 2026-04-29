@@ -4,7 +4,6 @@ import { isMissingConfig } from './lib/supabase'
 import ProtectedRoute from './components/ProtectedRoute'
 import Layout from './components/Layout'
 import Login from './pages/Login'
-import AuthCallback from './pages/AuthCallback'
 import SetupRequired from './pages/SetupRequired'
 import Dashboard from './pages/Dashboard'
 import TeamHub from './pages/TeamHub'
@@ -12,6 +11,7 @@ import OpenPool from './pages/OpenPool'
 import Workspace from './pages/Workspace'
 import Leaderboard from './pages/Leaderboard'
 import Teams from './pages/Teams'
+import AdminPanel from './pages/AdminPanel'
 
 export default function App() {
   if (isMissingConfig) return <SetupRequired />
@@ -20,11 +20,10 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public routes */}
+          {/* Public */}
           <Route path="/login" element={<Login />} />
-          <Route path="/auth/callback" element={<AuthCallback />} />
 
-          {/* Protected routes — redirect to /login if no session */}
+          {/* Protected */}
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
               <Route path="/" element={<Dashboard />} />
@@ -33,6 +32,7 @@ export default function App() {
               <Route path="/workspace" element={<Workspace />} />
               <Route path="/leaderboard" element={<Leaderboard />} />
               <Route path="/teams" element={<Teams />} />
+              <Route path="/admin" element={<AdminPanel />} />
             </Route>
           </Route>
 

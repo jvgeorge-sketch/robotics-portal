@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../context/AuthContext'
+import { awardClutchSave } from '../lib/badges'
 
 interface TeamStat {
   id: string; name: string; icon: string; color: string; bg: string
@@ -27,6 +29,7 @@ function initials(name: string) {
 }
 
 export default function Dashboard() {
+  const { currentUser } = useAuth()
   const [teamStats, setTeamStats] = useState<TeamStat[]>([])
   const [blockers, setBlockers] = useState<BlockerRow[]>([])
   const [topProfiles, setTopProfiles] = useState<TopProfile[]>([])
@@ -34,6 +37,7 @@ export default function Dashboard() {
   const [totalTasks, setTotalTasks] = useState(0)
   const [doneTasks, setDoneTasks] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [resolvingId, setResolvingId] = useState<string | null>(null)
 
   useEffect(() => {
     async function load() {
@@ -94,6 +98,18 @@ export default function Dashboard() {
     }
     load()
   }, [])
+
+  async function resolveBlocker(blockerId: string) {
+    if (!currentUser) return
+    setResolvingId(blockerId)
+    await supabase
+      .from('blockers')
+      .update({ resolved_at: new Date().toISOString(), resolved_by: currentUser.id })
+      .eq('id', blockerId)
+    setBlockers(prev => prev.filter(b => b.id !== blockerId))
+    await awardClutchSave(currentUser.id)
+    setResolvingId(null)
+  }
 
   const seasonPct = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0
   const topProfile = topProfiles[0]
@@ -287,7 +303,17 @@ export default function Dashboard() {
                         </p>
                       </div>
                     </div>
-                    <span className="text-[10px] font-black px-2 py-1 rounded bg-[#ba1a1a] text-white">OPEN</span>
+                    <button
+                      onClick={() => resolveBlocker(b.id)}
+                      disabled={resolvingId === b.id}
+                      className="text-[10px] font-black px-2 py-1 rounded bg-emerald-600 text-white hover:bg-emerald-700 transition-colors disabled:opacity-50 flex items-center gap-1"
+                    >
+                      {resolvingId === b.id
+                        ? <span className="material-symbols-outlined text-xs animate-spin">refresh</span>
+                        : <span className="material-symbols-outlined" style={{ fontSize: 12 }}>check</span>
+                      }
+                      Resolve
+                    </button>
                   </div>
                 ))}
               </div>

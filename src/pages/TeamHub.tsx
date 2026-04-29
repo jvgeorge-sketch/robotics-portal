@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../context/AuthContext'
+import { checkAndAwardBadges, updateDailyStreak } from '../lib/badges'
 import CreateTaskModal from '../components/CreateTaskModal'
 import TaskDetailModal from '../components/TaskDetailModal'
 
@@ -11,6 +13,8 @@ interface Task {
   points_value: number
   estimated_minutes: number | null
   tags: string[]
+  team_id: string | null
+  completed_at: string | null
   assignee_id: string | null
   assignee_name: string
   assignee_initials: string
@@ -140,6 +144,7 @@ function AssignMenu({
 
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function TeamHub() {
+  const { currentUser, refreshProfile } = useAuth()
   const [taskMap, setTaskMap] = useState<Record<ColumnId, Task[]>>({
     backlog: [], ready: [], in_progress: [], review: [], done: [],
   })
@@ -157,7 +162,7 @@ export default function TeamHub() {
     const [{ data, error }, { count }, { data: profileData }] = await Promise.all([
       supabase
         .from('tasks')
-        .select('id, title, status, priority, points_value, estimated_minutes, tags, assigned_to(id, full_name)')
+        .select('id, title, status, priority, points_value, estimated_minutes, tags, team_id, completed_at, assigned_to(id, full_name)')
         .order('created_at', { ascending: false }),
       supabase
         .from('blockers')
@@ -184,7 +189,9 @@ export default function TeamHub() {
       map[col].push({
         id: row.id, title: row.title, status: row.status, priority: row.priority,
         points_value: row.points_value, estimated_minutes: row.estimated_minutes,
-        tags: row.tags || [], assignee_id: assignee?.id || null,
+        tags: row.tags || [], team_id: row.team_id || null,
+        completed_at: row.completed_at || null,
+        assignee_id: assignee?.id || null,
         assignee_name: name, assignee_initials: initials(name),
       })
     }
@@ -197,6 +204,13 @@ export default function TeamHub() {
 
   async function moveTask(taskId: string, newStatus: ColumnId) {
     setMoving(taskId)
+
+    // Find task before optimistic update to get points_value and assignee_id
+    let movedTask: Task | undefined
+    for (const col of Object.keys(taskMap) as ColumnId[]) {
+      const found = taskMap[col].find(t => t.id === taskId)
+      if (found) { movedTask = found; break }
+    }
 
     // Optimistic update — move card immediately in UI
     setTaskMap(prev => {
@@ -213,10 +227,43 @@ export default function TeamHub() {
       return next
     })
 
+    // Double-points guard: only award if task was not previously completed
+    const firstCompletion = newStatus === 'done' && !movedTask?.completed_at
+
     const updates: Record<string, unknown> = { status: newStatus }
-    if (newStatus === 'done') updates.completed_at = new Date().toISOString()
+    if (firstCompletion) updates.completed_at = new Date().toISOString()
 
     await supabase.from('tasks').update(updates).eq('id', taskId)
+
+    // Award points, badges, and streak only on first completion
+    if (firstCompletion && movedTask && movedTask.assignee_id && movedTask.points_value > 0) {
+      const { data: assignee } = await supabase
+        .from('profiles')
+        .select('season_points, total_points')
+        .eq('id', movedTask.assignee_id)
+        .single()
+      if (assignee) {
+        await supabase.from('profiles').update({
+          season_points: (assignee.season_points || 0) + movedTask.points_value,
+          total_points: (assignee.total_points || 0) + movedTask.points_value,
+        }).eq('id', movedTask.assignee_id)
+        if (currentUser && movedTask.assignee_id === currentUser.id) {
+          await refreshProfile()
+        }
+      }
+      await Promise.all([
+        checkAndAwardBadges({
+          taskId,
+          userId: movedTask.assignee_id,
+          priority: movedTask.priority,
+          tags: movedTask.tags,
+          teamId: movedTask.team_id,
+          estimatedMinutes: movedTask.estimated_minutes,
+        }),
+        updateDailyStreak(movedTask.assignee_id),
+      ])
+    }
+
     setMoving(null)
   }
 

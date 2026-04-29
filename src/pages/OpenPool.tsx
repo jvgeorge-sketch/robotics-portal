@@ -35,7 +35,7 @@ function initials(name: string) {
 }
 
 export default function OpenPool() {
-  const { user } = useAuth()
+  const { currentUser: user } = useAuth()
   const [tasks, setTasks] = useState<PoolTask[]>([])
   const [claimEvents, setClaimEvents] = useState<ClaimEvent[]>([])
   const [activeFilter, setActiveFilter] = useState('All Tasks')

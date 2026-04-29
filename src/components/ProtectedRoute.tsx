@@ -1,10 +1,8 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
-// Shows a spinner while the session is being read from Supabase,
-// redirects to /login if unauthenticated, otherwise renders children.
 export default function ProtectedRoute() {
-  const { session, loading } = useAuth()
+  const { currentUser, loading } = useAuth()
 
   if (loading) {
     return (
@@ -17,7 +15,7 @@ export default function ProtectedRoute() {
     )
   }
 
-  if (!session) {
+  if (!currentUser) {
     return <Navigate to="/login" replace />
   }
 

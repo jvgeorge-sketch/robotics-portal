@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../context/AuthContext'
+import { checkAndAwardBadges, updateDailyStreak } from '../lib/badges'
 import type { Team } from '../lib/database.types'
 
 interface TaskDetail {
@@ -14,6 +16,7 @@ interface TaskDetail {
   team_id: string | null
   assigned_to: string | null
   created_at: string
+  completed_at: string | null
   assignee_name?: string
   team_name?: string
 }
@@ -48,6 +51,7 @@ function fmtDate(d: string) {
 }
 
 export default function TaskDetailModal({ taskId, onClose, onUpdated }: Props) {
+  const { currentUser, refreshProfile } = useAuth()
   const [task, setTask]       = useState<TaskDetail | null>(null)
   const [teams, setTeams]     = useState<Team[]>([])
   const [profiles, setProfiles] = useState<Profile[]>([])
@@ -87,7 +91,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated }: Props) {
           status: raw.status, priority: raw.priority, points_value: raw.points_value,
           estimated_minutes: raw.estimated_minutes, tags: raw.tags || [],
           team_id: raw.team_id?.id || null, assigned_to: raw.assigned_to?.id || null,
-          created_at: raw.created_at,
+          created_at: raw.created_at, completed_at: raw.completed_at || null,
           assignee_name: raw.assigned_to?.full_name,
           team_name: raw.team_id?.name,
         }
@@ -111,6 +115,8 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated }: Props) {
   async function save() {
     if (!task) return
     setSaving(true)
+    // Double-points guard: only award on first completion
+    const isMarkingDone = status === 'done' && task.status !== 'done' && !task.completed_at
     const { error } = await supabase.from('tasks').update({
       title: title.trim(),
       description: desc.trim() || null,
@@ -121,8 +127,38 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated }: Props) {
       team_id: teamId || null,
       assigned_to: assignedTo || null,
       tags,
-      ...(status === 'done' && task.status !== 'done' ? { completed_at: new Date().toISOString() } : {}),
+      ...(isMarkingDone ? { completed_at: new Date().toISOString() } : {}),
     }).eq('id', task.id)
+
+    // Award points, badges, and streak on first completion
+    if (!error && isMarkingDone && assignedTo && points > 0) {
+      const { data: assignee } = await supabase
+        .from('profiles')
+        .select('season_points, total_points')
+        .eq('id', assignedTo)
+        .single()
+      if (assignee) {
+        await supabase.from('profiles').update({
+          season_points: (assignee.season_points || 0) + points,
+          total_points: (assignee.total_points || 0) + points,
+        }).eq('id', assignedTo)
+        if (currentUser && assignedTo === currentUser.id) {
+          await refreshProfile()
+        }
+      }
+      await Promise.all([
+        checkAndAwardBadges({
+          taskId: task.id,
+          userId: assignedTo,
+          priority,
+          tags,
+          teamId: teamId || null,
+          estimatedMinutes: estMins === '' ? null : Number(estMins),
+        }),
+        updateDailyStreak(assignedTo),
+      ])
+    }
+
     setSaving(false)
     if (!error) { setEditing(false); onUpdated(); }
   }

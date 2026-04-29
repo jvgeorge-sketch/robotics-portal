@@ -48,7 +48,8 @@ function priorityColor(p: string) {
 }
 
 export default function Workspace() {
-  const { user, profile } = useAuth()
+  const { currentUser: user } = useAuth()
+  const profile = user
 
   const [myTasks, setMyTasks]           = useState<MyTask[]>([])
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null)
@@ -60,10 +61,19 @@ export default function Workspace() {
   const [elapsed, setElapsed]   = useState(0)
   const intervalRef = useRef<number | null>(null)
 
+  // Time logging
+  const timeLogIdRef = useRef<string | null>(null)
+  const elapsedRef   = useRef<number>(0)
+
+  // Keep elapsedRef in sync
+  useEffect(() => { elapsedRef.current = elapsed }, [elapsed])
+
   // Blocker modal
   const [showBlocker, setShowBlocker]       = useState(false)
   const [blockerDesc, setBlockerDesc]       = useState('')
   const [savingBlocker, setSavingBlocker]   = useState(false)
+  const [blockerError, setBlockerError]     = useState('')
+  const [blockerSuccess, setBlockerSuccess] = useState(false)
 
   // Status actions
   const [movingTask, setMovingTask] = useState(false)
@@ -116,13 +126,78 @@ export default function Workspace() {
     return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
   }, [running])
 
+  // Time logging: start/stop log entries
+  const activeTaskIdRef = useRef<string | null>(activeTaskId)
+  useEffect(() => { activeTaskIdRef.current = activeTaskId }, [activeTaskId])
+
+  useEffect(() => {
+    if (!user) return
+
+    async function handleRunningChange() {
+      if (running) {
+        // Starting a new session — insert time log
+        if (elapsedRef.current === 0 && activeTaskIdRef.current) {
+          const { data } = await supabase
+            .from('time_logs')
+            .insert({
+              task_id: activeTaskIdRef.current,
+              user_id: user!.id,
+              started_at: new Date().toISOString(),
+            })
+            .select('id')
+            .single()
+          if (data) {
+            timeLogIdRef.current = data.id
+          }
+        }
+      } else {
+        // Pausing — update time log with stopped_at and duration
+        if (timeLogIdRef.current && elapsedRef.current > 0) {
+          await supabase
+            .from('time_logs')
+            .update({
+              stopped_at: new Date().toISOString(),
+              duration_secs: elapsedRef.current,
+            })
+            .eq('id', timeLogIdRef.current)
+          timeLogIdRef.current = null
+        }
+      }
+    }
+
+    handleRunningChange()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [running])
+
+  // Reset timer and log id when active task changes
+  useEffect(() => {
+    setRunning(false)
+    setElapsed(0)
+    timeLogIdRef.current = null
+  }, [activeTaskId])
+
   const activeTask = myTasks.find(t => t.id === activeTaskId) || null
+
+  async function stopAndLogTime() {
+    if (running && timeLogIdRef.current && elapsedRef.current > 0) {
+      await supabase
+        .from('time_logs')
+        .update({
+          stopped_at: new Date().toISOString(),
+          duration_secs: elapsedRef.current,
+        })
+        .eq('id', timeLogIdRef.current)
+      timeLogIdRef.current = null
+    }
+    setRunning(false)
+  }
 
   async function submitForReview() {
     if (!activeTask) return
     setMovingTask(true)
+    // Stop and log time first if running
+    await stopAndLogTime()
     await supabase.from('tasks').update({ status: 'review' }).eq('id', activeTask.id)
-    setRunning(false)
     setElapsed(0)
     await load()
     setMovingTask(false)
@@ -131,14 +206,23 @@ export default function Workspace() {
   async function submitBlocker() {
     if (!activeTask || !user || !blockerDesc.trim()) return
     setSavingBlocker(true)
-    await supabase.from('blockers').insert({
+    setBlockerError('')
+    const { error } = await supabase.from('blockers').insert({
       task_id: activeTask.id,
       reported_by: user.id,
       description: blockerDesc.trim(),
     })
     setSavingBlocker(false)
-    setBlockerDesc('')
-    setShowBlocker(false)
+    if (error) {
+      setBlockerError('Failed to save blocker. Please try again.')
+    } else {
+      setBlockerSuccess(true)
+      setBlockerDesc('')
+      setTimeout(() => {
+        setBlockerSuccess(false)
+        setShowBlocker(false)
+      }, 1500)
+    }
   }
 
   const earnedSet = new Set(earnedBadges.map(b => b.badge_type))
@@ -189,7 +273,7 @@ export default function Workspace() {
                 {myTasks.map(t => (
                   <button
                     key={t.id}
-                    onClick={() => { setActiveTaskId(t.id); setRunning(false); setElapsed(0) }}
+                    onClick={() => setActiveTaskId(t.id)}
                     className={`px-3 py-1.5 rounded-lg text-sm font-semibold border transition-all ${
                       t.id === activeTaskId
                         ? 'bg-[#091426] text-white border-[#091426]'
@@ -376,7 +460,7 @@ export default function Workspace() {
                 {myTasks.map(t => (
                   <button
                     key={t.id}
-                    onClick={() => { setActiveTaskId(t.id); setRunning(false); setElapsed(0) }}
+                    onClick={() => setActiveTaskId(t.id)}
                     className={`w-full p-4 hover:bg-[#eff4ff] transition-colors flex gap-3 text-left ${t.id === activeTaskId ? 'bg-[#e5eeff]' : ''}`}
                   >
                     <div className={`w-10 h-10 rounded flex items-center justify-center flex-shrink-0 ${
@@ -410,29 +494,41 @@ export default function Workspace() {
             <p className="text-sm text-slate-500 mb-4">
               Task: <span className="font-semibold text-slate-700">{activeTask?.title}</span>
             </p>
-            <textarea
-              value={blockerDesc}
-              onChange={e => setBlockerDesc(e.target.value)}
-              placeholder="Describe what's blocking you..."
-              rows={4}
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20 resize-none mb-4"
-            />
-            <div className="flex gap-3">
-              <button onClick={() => setShowBlocker(false)} className="flex-1 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50">
-                Cancel
-              </button>
-              <button
-                onClick={submitBlocker}
-                disabled={savingBlocker || !blockerDesc.trim()}
-                className="flex-1 py-2.5 bg-[#ba1a1a] text-white rounded-xl text-sm font-bold hover:bg-[#93000a] disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {savingBlocker
-                  ? <span className="material-symbols-outlined animate-spin text-lg">refresh</span>
-                  : <span className="material-symbols-outlined text-lg">block</span>
-                }
-                Submit Blocker
-              </button>
-            </div>
+            {blockerSuccess ? (
+              <div className="py-8 text-center">
+                <span className="material-symbols-outlined text-5xl text-emerald-500 block mb-2">check_circle</span>
+                <p className="font-bold text-slate-900">Blocker reported!</p>
+              </div>
+            ) : (
+              <>
+                <textarea
+                  value={blockerDesc}
+                  onChange={e => { setBlockerDesc(e.target.value); setBlockerError('') }}
+                  placeholder="Describe what's blocking you..."
+                  rows={4}
+                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20 resize-none mb-2"
+                />
+                {blockerError && (
+                  <p className="text-sm text-[#ba1a1a] mb-3">{blockerError}</p>
+                )}
+                <div className="flex gap-3 mt-2">
+                  <button onClick={() => { setShowBlocker(false); setBlockerError('') }} className="flex-1 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50">
+                    Cancel
+                  </button>
+                  <button
+                    onClick={submitBlocker}
+                    disabled={savingBlocker || !blockerDesc.trim()}
+                    className="flex-1 py-2.5 bg-[#ba1a1a] text-white rounded-xl text-sm font-bold hover:bg-[#93000a] disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {savingBlocker
+                      ? <span className="material-symbols-outlined animate-spin text-lg">refresh</span>
+                      : <span className="material-symbols-outlined text-lg">block</span>
+                    }
+                    Submit Blocker
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}

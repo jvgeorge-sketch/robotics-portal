@@ -13,7 +13,7 @@ const PRIORITIES = ['low', 'medium', 'high', 'critical'] as const
 const STATUSES  = ['backlog', 'ready', 'in_progress', 'review'] as const
 
 export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: Props) {
-  const { user } = useAuth()
+  const { currentUser } = useAuth()
   const [teams, setTeams] = useState<Team[]>([])
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -22,7 +22,7 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
   const [description, setDesc]      = useState('')
   const [priority, setPriority]     = useState<typeof PRIORITIES[number]>('medium')
   const [status, setStatus]         = useState<typeof STATUSES[number]>((defaultStatus as typeof STATUSES[number]) || 'backlog')
-  const [teamId, setTeamId]         = useState<string>('') // '' = open pool
+  const [teamId, setTeamId]         = useState<string>('')
   const [points, setPoints]         = useState(50)
   const [estMins, setEstMins]       = useState<number | ''>('')
   const [tagInput, setTagInput]     = useState('')
@@ -44,7 +44,7 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!title.trim()) { setError('Title is required'); return }
-    if (!user) { setError('Not signed in'); return }
+    if (!currentUser) { setError('Not signed in'); return }
 
     setSaving(true)
     setError('')
@@ -58,7 +58,7 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
       points_value: points,
       estimated_minutes: estMins === '' ? null : Number(estMins),
       tags,
-      created_by: user.id,
+      created_by: currentUser.id,
     })
 
     setSaving(false)
@@ -101,9 +101,7 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
 
           {/* Description */}
           <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-              Description
-            </label>
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Description</label>
             <textarea
               value={description}
               onChange={e => setDesc(e.target.value)}
@@ -119,10 +117,7 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Priority</label>
               <div className="flex flex-wrap gap-2">
                 {PRIORITIES.map(p => (
-                  <button
-                    key={p}
-                    type="button"
-                    onClick={() => setPriority(p)}
+                  <button key={p} type="button" onClick={() => setPriority(p)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition-all border ${
                       priority === p
                         ? p === 'critical' ? 'bg-[#ba1a1a] text-white border-[#ba1a1a]'
@@ -130,10 +125,7 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
                           : p === 'medium' ? 'bg-[#00687a] text-white border-[#00687a]'
                           : 'bg-slate-500 text-white border-slate-500'
                         : 'bg-white text-slate-500 border-slate-200 hover:border-slate-400'
-                    }`}
-                  >
-                    {p}
-                  </button>
+                    }`}>{p}</button>
                 ))}
               </div>
             </div>
@@ -141,18 +133,10 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Start In</label>
               <div className="flex flex-wrap gap-2">
                 {STATUSES.map(s => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => setStatus(s)}
+                  <button key={s} type="button" onClick={() => setStatus(s)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition-all border ${
-                      status === s
-                        ? 'bg-[#091426] text-white border-[#091426]'
-                        : 'bg-white text-slate-500 border-slate-200 hover:border-slate-400'
-                    }`}
-                  >
-                    {s.replace('_', ' ')}
-                  </button>
+                      status === s ? 'bg-[#091426] text-white border-[#091426]' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-400'
+                    }`}>{s.replace('_', ' ')}</button>
                 ))}
               </div>
             </div>
@@ -161,15 +145,10 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
           {/* Team */}
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Assign to Team</label>
-            <select
-              value={teamId}
-              onChange={e => setTeamId(e.target.value)}
-              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20 bg-white"
-            >
+            <select value={teamId} onChange={e => setTeamId(e.target.value)}
+              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20 bg-white">
               <option value="">Open Pool (any team)</option>
-              {teams.map(t => (
-                <option key={t.id} value={t.id}>{t.name}</option>
-              ))}
+              {teams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </div>
 
@@ -177,25 +156,14 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Points Value</label>
-              <input
-                type="number"
-                min={1}
-                max={1000}
-                value={points}
-                onChange={e => setPoints(Number(e.target.value))}
-                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20"
-              />
+              <input type="number" min={1} max={1000} value={points} onChange={e => setPoints(Number(e.target.value))}
+                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20" />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Est. Minutes</label>
-              <input
-                type="number"
-                min={1}
-                placeholder="e.g. 120"
-                value={estMins}
+              <input type="number" min={1} placeholder="e.g. 120" value={estMins}
                 onChange={e => setEstMins(e.target.value === '' ? '' : Number(e.target.value))}
-                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20"
-              />
+                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20" />
             </div>
           </div>
 
@@ -212,38 +180,25 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
                 </span>
               ))}
             </div>
-            <input
-              value={tagInput}
-              onChange={e => setTagInput(e.target.value)}
-              onKeyDown={addTag}
+            <input value={tagInput} onChange={e => setTagInput(e.target.value)} onKeyDown={addTag}
               placeholder="Type a tag and press Enter"
-              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20"
-            />
+              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20" />
           </div>
 
           {error && (
-            <div className="bg-[#ffdad6] text-[#93000a] text-sm font-medium px-4 py-2.5 rounded-xl">
-              {error}
-            </div>
+            <div className="bg-[#ffdad6] text-[#93000a] text-sm font-medium px-4 py-2.5 rounded-xl">{error}</div>
           )}
 
-          {/* Actions */}
           <div className="flex gap-3 pt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors"
-            >
+            <button type="button" onClick={onClose}
+              className="flex-1 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">
               Cancel
             </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="flex-1 py-2.5 bg-[#00687a] hover:bg-[#005566] text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-            >
+            <button type="submit" disabled={saving}
+              className="flex-1 py-2.5 bg-[#00687a] hover:bg-[#005566] text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
               {saving
-                ? <><span className="material-symbols-outlined text-lg animate-spin">refresh</span> Saving…</>
-                : <><span className="material-symbols-outlined text-lg">add_task</span> Create Task</>
+                ? <><span className="material-symbols-outlined text-lg animate-spin">refresh</span>Saving…</>
+                : <><span className="material-symbols-outlined text-lg">add_task</span>Create Task</>
               }
             </button>
           </div>
