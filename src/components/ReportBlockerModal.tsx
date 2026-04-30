@@ -62,9 +62,9 @@ export default function ReportBlockerModal({ onClose }: Props) {
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 bg-[#091426] text-white">
+        <div className="flex items-center justify-between px-6 py-4 bg-[#1E3A8A] text-white">
           <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-[#eb6905]">report_problem</span>
+            <span className="material-symbols-outlined text-[#F59E0B]">report_problem</span>
             <h2 className="font-display text-lg font-bold">Report a Blocker</h2>
           </div>
           <button onClick={onClose} className="text-white/60 hover:text-white transition-colors">
@@ -89,7 +89,7 @@ export default function ReportBlockerModal({ onClose }: Props) {
               <select
                 value={selectedTaskId}
                 onChange={e => setSelectedTaskId(e.target.value)}
-                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20"
+                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
               >
                 <option value="">— No specific task —</option>
                 {tasks.map(t => (
@@ -109,7 +109,7 @@ export default function ReportBlockerModal({ onClose }: Props) {
                 placeholder="Describe what's blocking you or the team..."
                 rows={4}
                 required
-                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20 resize-none"
+                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20 resize-none"
               />
             </div>
 
@@ -130,7 +130,7 @@ export default function ReportBlockerModal({ onClose }: Props) {
               <button
                 type="submit"
                 disabled={saving || !description.trim()}
-                className="flex-1 py-2.5 bg-[#481b00] text-[#eb6905] rounded-xl text-sm font-bold hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex-1 py-2.5 bg-[#78350F] text-[#F59E0B] rounded-xl text-sm font-bold hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {saving
                   ? <span className="material-symbols-outlined animate-spin text-lg">refresh</span>

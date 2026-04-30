@@ -21,11 +21,11 @@ interface MyBadge {
 }
 
 const BADGE_META: Record<string, { icon: string; bg: string; color: string; label: string }> = {
-  speed_demon:    { icon: 'speed',              bg: 'bg-[#57dffe]/20', color: 'text-[#00687a]',  label: 'Speed Demon'    },
-  clutch_save:    { icon: 'handshake',          bg: 'bg-[#ffdbca]',    color: 'text-[#341100]',  label: 'Clutch Save'    },
-  master_builder: { icon: 'construction',       bg: 'bg-[#d3e4fe]',    color: 'text-[#111c2d]',  label: 'Master Builder' },
+  speed_demon:    { icon: 'speed',              bg: 'bg-[#FBBF24]/20', color: 'text-[#1D4ED8]',  label: 'Speed Demon'    },
+  clutch_save:    { icon: 'handshake',          bg: 'bg-[#FDE68A]',    color: 'text-[#78350F]',  label: 'Clutch Save'    },
+  master_builder: { icon: 'construction',       bg: 'bg-[#DBEAFE]',    color: 'text-[#1F2937]',  label: 'Master Builder' },
   bug_hunter:     { icon: 'psychology',         bg: 'bg-[#ffdad6]',    color: 'text-[#93000a]',  label: 'Bug Hunter'     },
-  code_ninja:     { icon: 'terminal',           bg: 'bg-[#e5eeff]',    color: 'text-[#00687a]',  label: 'Code Ninja'     },
+  code_ninja:     { icon: 'terminal',           bg: 'bg-[#EFF6FF]',    color: 'text-[#1D4ED8]',  label: 'Code Ninja'     },
   power_surge:    { icon: 'bolt',               bg: 'bg-[#fffbeb]',    color: 'text-[#b45309]',  label: 'Power Surge'    },
   team_player:    { icon: 'groups',             bg: 'bg-[#ecfdf5]',    color: 'text-[#065f46]',  label: 'Team Player'    },
   daily_winner:   { icon: 'workspace_premium',  bg: 'bg-[#fef3c7]',    color: 'text-[#92400e]',  label: 'Daily Winner'   },
@@ -42,8 +42,8 @@ function formatTime(s: number) {
 
 function priorityColor(p: string) {
   if (p === 'critical') return 'text-[#ba1a1a] bg-[#ffdad6]'
-  if (p === 'high')     return 'text-[#eb6905] bg-[#ffdbca]'
-  if (p === 'medium')   return 'text-[#00687a] bg-[#57dffe]/20'
+  if (p === 'high')     return 'text-[#F59E0B] bg-[#FDE68A]'
+  if (p === 'medium')   return 'text-[#1D4ED8] bg-[#FBBF24]/20'
   return 'text-slate-500 bg-slate-100'
 }
 
@@ -232,7 +232,7 @@ export default function Workspace() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <span className="material-symbols-outlined text-[#00687a] text-4xl animate-spin">refresh</span>
+        <span className="material-symbols-outlined text-[#1D4ED8] text-4xl animate-spin">refresh</span>
       </div>
     )
   }
@@ -242,21 +242,21 @@ export default function Workspace() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div>
-          <span className="text-[10px] font-bold uppercase tracking-widest text-[#00687a]">Personal Workspace</span>
-          <h1 className="font-display text-4xl font-bold text-[#091426] mt-1">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-[#1D4ED8]">Personal Workspace</span>
+          <h1 className="font-display text-4xl font-bold text-[#1E3A8A] mt-1">
             {profile?.full_name ? `${profile.full_name.split(' ')[0]}'s Workspace` : 'My Workspace'}
           </h1>
         </div>
-        <div className="flex items-center bg-white p-2 rounded-xl shadow-sm border border-[#c5c6cd]">
-          <div className="px-4 text-center border-r border-[#c5c6cd]">
+        <div className="flex items-center bg-white p-2 rounded-xl shadow-sm border border-[#D1D5DB]">
+          <div className="px-4 text-center border-r border-[#D1D5DB]">
             <span className="block text-[10px] font-bold text-slate-500 uppercase">SESSION</span>
-            <span className="font-display text-xl font-bold text-[#091426]">
+            <span className="font-display text-xl font-bold text-[#1E3A8A]">
               {String(sessionH).padStart(2,'0')}:{String(sessionM).padStart(2,'0')}
             </span>
           </div>
           <div className="px-4 text-center">
             <span className="block text-[10px] font-bold text-slate-500 uppercase">MY TASKS</span>
-            <span className="font-display text-xl font-bold text-[#00687a]">{myTasks.length}</span>
+            <span className="font-display text-xl font-bold text-[#1D4ED8]">{myTasks.length}</span>
           </div>
         </div>
       </div>
@@ -276,8 +276,8 @@ export default function Workspace() {
                     onClick={() => setActiveTaskId(t.id)}
                     className={`px-3 py-1.5 rounded-lg text-sm font-semibold border transition-all ${
                       t.id === activeTaskId
-                        ? 'bg-[#091426] text-white border-[#091426]'
-                        : 'bg-white text-slate-600 border-slate-200 hover:border-[#00687a]'
+                        ? 'bg-[#1E3A8A] text-white border-[#1E3A8A]'
+                        : 'bg-white text-slate-600 border-slate-200 hover:border-[#1D4ED8]'
                     }`}
                   >
                     {t.title.length > 30 ? t.title.slice(0, 30) + '…' : t.title}
@@ -292,8 +292,8 @@ export default function Workspace() {
 
           {/* Active Task Card */}
           {activeTask ? (
-            <section className="bg-white rounded-xl border border-[#c5c6cd] p-6 relative overflow-hidden shadow-sm">
-              <div className="absolute top-0 left-0 w-1.5 h-full bg-[#00687a]" />
+            <section className="bg-white rounded-xl border border-[#D1D5DB] p-6 relative overflow-hidden shadow-sm">
+              <div className="absolute top-0 left-0 w-1.5 h-full bg-[#1D4ED8]" />
               <div className="flex justify-between items-start mb-5">
                 <div className="flex-1 pr-4">
                   <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -311,34 +311,34 @@ export default function Workspace() {
                       : 'bg-slate-100 text-slate-500'
                     }`}>{activeTask.status.replace('_',' ')}</span>
                   </div>
-                  <h2 className="font-display text-2xl font-bold text-[#091426]">{activeTask.title}</h2>
+                  <h2 className="font-display text-2xl font-bold text-[#1E3A8A]">{activeTask.title}</h2>
                   {activeTask.description && (
-                    <p className="text-[#45474c] mt-2 text-sm">{activeTask.description}</p>
+                    <p className="text-[#4B5563] mt-2 text-sm">{activeTask.description}</p>
                   )}
                 </div>
-                <div className="flex items-center gap-1 text-[#00687a] flex-shrink-0">
+                <div className="flex items-center gap-1 text-[#1D4ED8] flex-shrink-0">
                   <span className="material-symbols-filled text-xl">bolt</span>
                   <span className="font-display text-lg font-medium">{activeTask.points_value} pts</span>
                 </div>
               </div>
 
               {/* Timer */}
-              <div className="bg-[#eff4ff] rounded-xl p-8 flex flex-col items-center justify-center border-2 border-dashed border-[#c5c6cd] mb-5">
+              <div className="bg-[#EFF6FF] rounded-xl p-8 flex flex-col items-center justify-center border-2 border-dashed border-[#D1D5DB] mb-5">
                 <div className="text-center mb-5">
-                  <span className="timer-display text-7xl text-[#091426] block leading-none">{formatTime(elapsed)}</span>
-                  <span className="block text-[#45474c] text-[10px] uppercase font-bold tracking-wider mt-2">Active Session Time</span>
+                  <span className="timer-display text-7xl text-[#1E3A8A] block leading-none">{formatTime(elapsed)}</span>
+                  <span className="block text-[#4B5563] text-[10px] uppercase font-bold tracking-wider mt-2">Active Session Time</span>
                 </div>
                 <div className="flex flex-wrap justify-center gap-4">
                   <button
                     onClick={() => setRunning(r => !r)}
-                    className="h-14 px-10 bg-[#00687a] text-white rounded-xl font-bold flex items-center gap-3 hover:brightness-110 active:scale-95 transition-all shadow-lg"
+                    className="h-14 px-10 bg-[#1D4ED8] text-white rounded-xl font-bold flex items-center gap-3 hover:brightness-110 active:scale-95 transition-all shadow-lg"
                   >
                     <span className="material-symbols-filled text-3xl">{running ? 'pause' : 'play_arrow'}</span>
                     {running ? 'PAUSE' : elapsed > 0 ? 'RESUME' : 'START TIMER'}
                   </button>
                   <button
                     onClick={() => { setElapsed(0); setRunning(false) }}
-                    className="h-14 px-8 border-2 border-[#75777d] text-[#091426] rounded-xl font-bold flex items-center gap-3 hover:bg-[#e5eeff] active:scale-95 transition-all"
+                    className="h-14 px-8 border-2 border-[#6B7280] text-[#1E3A8A] rounded-xl font-bold flex items-center gap-3 hover:bg-[#EFF6FF] active:scale-95 transition-all"
                   >
                     <span className="material-symbols-outlined text-2xl">restart_alt</span>
                     RESET
@@ -349,7 +349,7 @@ export default function Workspace() {
               <div className="grid grid-cols-2 gap-4">
                 <button
                   onClick={() => setShowBlocker(true)}
-                  className="flex items-center justify-center gap-2 py-3.5 bg-[#481b00]/10 text-[#eb6905] font-bold rounded-lg border border-[#481b00]/20 hover:bg-[#481b00]/20 transition-colors"
+                  className="flex items-center justify-center gap-2 py-3.5 bg-[#78350F]/10 text-[#F59E0B] font-bold rounded-lg border border-[#78350F]/20 hover:bg-[#78350F]/20 transition-colors"
                 >
                   <span className="material-symbols-outlined">block</span>
                   Report Blocker
@@ -357,7 +357,7 @@ export default function Workspace() {
                 <button
                   onClick={submitForReview}
                   disabled={movingTask}
-                  className="flex items-center justify-center gap-2 py-3.5 bg-[#091426] text-white font-bold rounded-lg hover:bg-slate-800 transition-colors disabled:opacity-50"
+                  className="flex items-center justify-center gap-2 py-3.5 bg-[#1E3A8A] text-white font-bold rounded-lg hover:bg-slate-800 transition-colors disabled:opacity-50"
                 >
                   {movingTask
                     ? <span className="material-symbols-outlined animate-spin">refresh</span>
@@ -377,41 +377,41 @@ export default function Workspace() {
 
           {/* Personal Stats */}
           <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div className="bg-white p-6 rounded-xl border border-[#c5c6cd] shadow-sm">
+            <div className="bg-white p-6 rounded-xl border border-[#D1D5DB] shadow-sm">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-lg bg-[#00687a]/10 flex items-center justify-center text-[#00687a]">
+                <div className="w-10 h-10 rounded-lg bg-[#1D4ED8]/10 flex items-center justify-center text-[#1D4ED8]">
                   <span className="material-symbols-outlined">workspace_premium</span>
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#45474c]">Season Points</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#4B5563]">Season Points</span>
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="font-display text-3xl font-bold text-[#091426]">
+                <span className="font-display text-3xl font-bold text-[#1E3A8A]">
                   {(profile?.season_points ?? 0).toLocaleString()}
                 </span>
               </div>
             </div>
-            <div className="bg-white p-6 rounded-xl border border-[#c5c6cd] shadow-sm">
+            <div className="bg-white p-6 rounded-xl border border-[#D1D5DB] shadow-sm">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-lg bg-[#481b00]/10 flex items-center justify-center text-[#eb6905]">
+                <div className="w-10 h-10 rounded-lg bg-[#78350F]/10 flex items-center justify-center text-[#F59E0B]">
                   <span className="material-symbols-outlined">leaderboard</span>
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#45474c]">Total Points</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#4B5563]">Total Points</span>
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="font-display text-3xl font-bold text-[#091426]">
+                <span className="font-display text-3xl font-bold text-[#1E3A8A]">
                   {(profile?.total_points ?? 0).toLocaleString()}
                 </span>
               </div>
             </div>
-            <div className="bg-white p-6 rounded-xl border border-[#c5c6cd] shadow-sm">
+            <div className="bg-white p-6 rounded-xl border border-[#D1D5DB] shadow-sm">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 rounded-lg bg-[#ba1a1a]/10 flex items-center justify-center text-[#ba1a1a]">
                   <span className="material-symbols-filled">local_fire_department</span>
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#45474c]">Day Streak</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#4B5563]">Day Streak</span>
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="font-display text-3xl font-bold text-[#091426]">
+                <span className="font-display text-3xl font-bold text-[#1E3A8A]">
                   {profile?.daily_streak ?? 0} Days
                 </span>
               </div>
@@ -422,9 +422,9 @@ export default function Workspace() {
         {/* Right: badges + queue */}
         <div className="lg:col-span-4 space-y-6">
           {/* Badges */}
-          <section className="bg-white rounded-xl border border-[#c5c6cd] overflow-hidden shadow-sm">
-            <div className="p-5 border-b border-[#c5c6cd] flex justify-between items-center">
-              <h3 className="font-display text-xl font-semibold text-[#091426]">My Badges</h3>
+          <section className="bg-white rounded-xl border border-[#D1D5DB] overflow-hidden shadow-sm">
+            <div className="p-5 border-b border-[#D1D5DB] flex justify-between items-center">
+              <h3 className="font-display text-xl font-semibold text-[#1E3A8A]">My Badges</h3>
               <span className="text-xs text-slate-400 font-bold">{earnedBadges.length} / {ALL_BADGES.length}</span>
             </div>
             <div className="p-5 grid grid-cols-2 gap-3">
@@ -435,13 +435,13 @@ export default function Workspace() {
                   <div
                     key={bt}
                     title={earned ? `Earned ${new Date(earnedBadges.find(b => b.badge_type === bt)!.earned_at).toLocaleDateString()}` : 'Not yet earned'}
-                    className={`flex flex-col items-center text-center p-3 rounded-lg transition-colors ${earned ? 'hover:bg-[#e5eeff]' : 'opacity-40 grayscale'}`}
+                    className={`flex flex-col items-center text-center p-3 rounded-lg transition-colors ${earned ? 'hover:bg-[#EFF6FF]' : 'opacity-40 grayscale'}`}
                   >
                     <div className={`w-14 h-14 rounded-full ${meta.bg} flex items-center justify-center mb-2 shadow-inner`}>
                       <span className={`material-symbols-filled text-2xl ${meta.color}`}>{meta.icon}</span>
                     </div>
-                    <span className="font-bold text-xs font-display text-[#091426]">{meta.label}</span>
-                    <span className="text-[10px] text-[#45474c]">{earned ? 'Earned' : 'Locked'}</span>
+                    <span className="font-bold text-xs font-display text-[#1E3A8A]">{meta.label}</span>
+                    <span className="text-[10px] text-[#4B5563]">{earned ? 'Earned' : 'Locked'}</span>
                   </div>
                 )
               })}
@@ -449,33 +449,33 @@ export default function Workspace() {
           </section>
 
           {/* Task queue */}
-          <section className="bg-white rounded-xl border border-[#c5c6cd] overflow-hidden shadow-sm">
-            <div className="p-5 border-b border-[#c5c6cd]">
-              <h3 className="font-display text-xl font-semibold text-[#091426]">My Queue</h3>
+          <section className="bg-white rounded-xl border border-[#D1D5DB] overflow-hidden shadow-sm">
+            <div className="p-5 border-b border-[#D1D5DB]">
+              <h3 className="font-display text-xl font-semibold text-[#1E3A8A]">My Queue</h3>
             </div>
             {myTasks.length === 0 ? (
               <p className="p-5 text-sm text-slate-400">No tasks assigned yet.</p>
             ) : (
-              <div className="divide-y divide-[#c5c6cd]">
+              <div className="divide-y divide-[#D1D5DB]">
                 {myTasks.map(t => (
                   <button
                     key={t.id}
                     onClick={() => setActiveTaskId(t.id)}
-                    className={`w-full p-4 hover:bg-[#eff4ff] transition-colors flex gap-3 text-left ${t.id === activeTaskId ? 'bg-[#e5eeff]' : ''}`}
+                    className={`w-full p-4 hover:bg-[#EFF6FF] transition-colors flex gap-3 text-left ${t.id === activeTaskId ? 'bg-[#EFF6FF]' : ''}`}
                   >
                     <div className={`w-10 h-10 rounded flex items-center justify-center flex-shrink-0 ${
-                      t.status === 'in_progress' ? 'bg-amber-100' : 'bg-[#e5eeff]'
+                      t.status === 'in_progress' ? 'bg-amber-100' : 'bg-[#EFF6FF]'
                     }`}>
                       <span className={`material-symbols-outlined text-xl ${
-                        t.status === 'in_progress' ? 'text-amber-600' : 'text-[#45474c]'
+                        t.status === 'in_progress' ? 'text-amber-600' : 'text-[#4B5563]'
                       }`}>{t.status === 'in_progress' ? 'play_circle' : 'radio_button_unchecked'}</span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-start gap-2">
-                        <h4 className="font-bold text-sm text-[#091426] leading-tight truncate">{t.title}</h4>
-                        <span className="font-display text-xs font-bold text-[#00687a] flex-shrink-0">{t.points_value}pt</span>
+                        <h4 className="font-bold text-sm text-[#1E3A8A] leading-tight truncate">{t.title}</h4>
+                        <span className="font-display text-xs font-bold text-[#1D4ED8] flex-shrink-0">{t.points_value}pt</span>
                       </div>
-                      <p className="text-xs text-[#45474c] mt-0.5 capitalize">{t.status.replace('_',' ')} · {t.priority} priority</p>
+                      <p className="text-xs text-[#4B5563] mt-0.5 capitalize">{t.status.replace('_',' ')} · {t.priority} priority</p>
                     </div>
                   </button>
                 ))}
@@ -490,7 +490,7 @@ export default function Workspace() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowBlocker(false)}>
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6" onClick={e => e.stopPropagation()}>
-            <h2 className="font-display text-xl font-bold text-[#091426] mb-1">Report a Blocker</h2>
+            <h2 className="font-display text-xl font-bold text-[#1E3A8A] mb-1">Report a Blocker</h2>
             <p className="text-sm text-slate-500 mb-4">
               Task: <span className="font-semibold text-slate-700">{activeTask?.title}</span>
             </p>
@@ -506,7 +506,7 @@ export default function Workspace() {
                   onChange={e => { setBlockerDesc(e.target.value); setBlockerError('') }}
                   placeholder="Describe what's blocking you..."
                   rows={4}
-                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20 resize-none mb-2"
+                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20 resize-none mb-2"
                 />
                 {blockerError && (
                   <p className="text-sm text-[#ba1a1a] mb-3">{blockerError}</p>

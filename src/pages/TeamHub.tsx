@@ -34,7 +34,7 @@ const COLUMNS: { id: ColumnId; label: string; color: string }[] = [
 
 const PRIORITY_COLOR: Record<string, string> = {
   critical: 'text-[#ba1a1a]',
-  high:     'text-[#eb6905]',
+  high:     'text-[#F59E0B]',
   medium:   'text-slate-500',
   low:      'text-slate-400',
 }
@@ -84,7 +84,7 @@ function StatusMenu({
           className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors
             ${col.id === current
               ? 'bg-slate-50 text-slate-400 cursor-default'
-              : 'hover:bg-[#e5eeff] text-slate-700'
+              : 'hover:bg-[#EFF6FF] text-slate-700'
             }`}
         >
           <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: col.color }} />
@@ -119,7 +119,7 @@ function AssignMenu({
       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 pt-3 pb-1">Assign to</p>
       <button
         onClick={() => { onAssign(taskId, null); onClose() }}
-        className="w-full text-left px-3 py-2 text-sm flex items-center gap-2 hover:bg-[#e5eeff] text-slate-500"
+        className="w-full text-left px-3 py-2 text-sm flex items-center gap-2 hover:bg-[#EFF6FF] text-slate-500"
       >
         <div className="w-6 h-6 rounded-full border-2 border-dashed border-slate-300 flex items-center justify-center">
           <span className="material-symbols-outlined text-slate-400" style={{ fontSize: 14 }}>person_off</span>
@@ -130,9 +130,9 @@ function AssignMenu({
         <button
           key={p.id}
           onClick={() => { onAssign(taskId, p.id); onClose() }}
-          className="w-full text-left px-3 py-2 text-sm flex items-center gap-2 hover:bg-[#e5eeff] text-slate-700"
+          className="w-full text-left px-3 py-2 text-sm flex items-center gap-2 hover:bg-[#EFF6FF] text-slate-700"
         >
-          <div className="w-6 h-6 rounded-full bg-[#1e293b] flex items-center justify-center text-white text-[9px] font-bold flex-shrink-0">
+          <div className="w-6 h-6 rounded-full bg-[#1E3A8A] flex items-center justify-center text-white text-[9px] font-bold flex-shrink-0">
             {p.full_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
           </div>
           <span className="truncate">{p.full_name}</span>
@@ -293,7 +293,7 @@ export default function TeamHub() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <span className="material-symbols-outlined text-[#00687a] text-4xl animate-spin">refresh</span>
+        <span className="material-symbols-outlined text-[#1D4ED8] text-4xl animate-spin">refresh</span>
       </div>
     )
   }
@@ -305,9 +305,9 @@ export default function TeamHub() {
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider mb-1">ACTIVE TASKS</p>
-            <h3 className="font-display text-2xl font-semibold text-[#091426]">{totalActive} open</h3>
+            <h3 className="font-display text-2xl font-semibold text-[#1E3A8A]">{totalActive} open</h3>
           </div>
-          <span className="material-symbols-outlined text-[#00687a] text-4xl">task_alt</span>
+          <span className="material-symbols-outlined text-[#1D4ED8] text-4xl">task_alt</span>
         </div>
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
@@ -321,12 +321,12 @@ export default function TeamHub() {
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider mb-1">DONE THIS SPRINT</p>
-            <h3 className="font-display text-2xl font-semibold text-[#091426]">{taskMap.done.length} tasks</h3>
+            <h3 className="font-display text-2xl font-semibold text-[#1E3A8A]">{taskMap.done.length} tasks</h3>
           </div>
           <span className="material-symbols-outlined text-[#10b981] text-4xl">check_circle</span>
         </div>
         <div
-          className="bg-[#00687a] p-5 rounded-xl shadow-lg flex items-center justify-center cursor-pointer hover:brightness-110 transition-all"
+          className="bg-[#1D4ED8] p-5 rounded-xl shadow-lg flex items-center justify-center cursor-pointer hover:brightness-110 transition-all"
           onClick={() => { setDefaultStatus('backlog'); setShowModal(true) }}
         >
           <div className="flex items-center gap-2 text-white font-bold text-lg">
@@ -379,9 +379,9 @@ export default function TeamHub() {
                       key={task.id}
                       onClick={() => setDetailTaskId(task.id)}
                       className={`bg-white p-4 rounded-xl border border-slate-200 shadow-sm transition-all cursor-pointer
-                        ${task.status === 'done' ? 'opacity-60' : 'hover:border-[#00687a] hover:shadow-md'}
+                        ${task.status === 'done' ? 'opacity-60' : 'hover:border-[#1D4ED8] hover:shadow-md'}
                         ${task.priority === 'critical' ? 'border-l-4 border-l-[#ba1a1a]' : ''}
-                        ${task.priority === 'high' ? 'border-t-4 border-t-[#00687a]' : ''}
+                        ${task.priority === 'high' ? 'border-t-4 border-t-[#1D4ED8]' : ''}
                         ${moving === task.id ? 'opacity-50 scale-[0.98]' : ''}
                       `}
                     >
@@ -391,7 +391,7 @@ export default function TeamHub() {
                             {task.tags[0]}
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 text-[10px] font-bold rounded uppercase bg-[#e5eeff] text-[#006172] capitalize">
+                          <span className="px-2 py-0.5 text-[10px] font-bold rounded uppercase bg-[#EFF6FF] text-[#1E40AF] capitalize">
                             {task.priority}
                           </span>
                         )}
@@ -403,7 +403,7 @@ export default function TeamHub() {
                           ) : (
                             <button
                               onClick={e => { e.stopPropagation(); setOpenMenuId(prev => prev === task.id ? null : task.id) }}
-                              className="text-slate-300 hover:text-[#00687a] transition-colors rounded p-0.5 hover:bg-[#e5eeff]"
+                              className="text-slate-300 hover:text-[#1D4ED8] transition-colors rounded p-0.5 hover:bg-[#EFF6FF]"
                             >
                               <span className="material-symbols-outlined text-lg">more_vert</span>
                             </button>
@@ -419,7 +419,7 @@ export default function TeamHub() {
                         </div>
                       </div>
 
-                      <h5 className={`text-sm font-semibold text-[#091426] mb-3 leading-snug ${task.status === 'done' ? 'line-through text-slate-400' : ''}`}>
+                      <h5 className={`text-sm font-semibold text-[#1E3A8A] mb-3 leading-snug ${task.status === 'done' ? 'line-through text-slate-400' : ''}`}>
                         {task.title}
                       </h5>
 
@@ -428,10 +428,10 @@ export default function TeamHub() {
                           <button
                             onClick={e => { e.stopPropagation(); setAssignMenuId(prev => prev === task.id ? null : task.id) }}
                             title={task.assignee_id ? task.assignee_name : 'Click to assign'}
-                            className={`w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold transition-all hover:ring-2 hover:ring-[#00687a] ${
+                            className={`w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold transition-all hover:ring-2 hover:ring-[#1D4ED8] ${
                               task.assignee_id
-                                ? 'bg-[#1e293b] text-white'
-                                : 'bg-slate-100 border-2 border-dashed border-slate-300 text-slate-400 hover:border-[#00687a]'
+                                ? 'bg-[#1E3A8A] text-white'
+                                : 'bg-slate-100 border-2 border-dashed border-slate-300 text-slate-400 hover:border-[#1D4ED8]'
                             }`}
                           >
                             {task.assignee_id
@@ -470,7 +470,7 @@ export default function TeamHub() {
                   {/* Add task button per column */}
                   <button
                     onClick={() => { setDefaultStatus(col.id as ColumnId); setShowModal(true) }}
-                    className="w-full py-2 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 hover:border-[#00687a] hover:text-[#00687a] transition-colors text-sm font-semibold"
+                    className="w-full py-2 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 hover:border-[#1D4ED8] hover:text-[#1D4ED8] transition-colors text-sm font-semibold"
                   >
                     + Add Task
                   </button>

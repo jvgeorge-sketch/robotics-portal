@@ -25,8 +25,8 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
   return (
     <>
       <div className="px-6 mb-8 flex items-center gap-3">
-        <div className="w-10 h-10 bg-[#1e293b] rounded-lg flex items-center justify-center">
-          <span className="material-symbols-outlined text-[#57dffe] text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>precision_manufacturing</span>
+        <div className="w-10 h-10 bg-[#1E3A8A] rounded-lg flex items-center justify-center">
+          <span className="material-symbols-outlined text-[#FBBF24] text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>precision_manufacturing</span>
         </div>
         <div>
           <h2 className="text-lg font-bold text-slate-900 font-display leading-tight">TECH COMMAND</h2>
@@ -44,7 +44,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all font-display font-medium text-sm ${
                 isActive
-                  ? 'bg-slate-50 text-[#00687a] border-r-4 border-[#00687a] font-semibold'
+                  ? 'bg-slate-50 text-[#1D4ED8] border-r-4 border-[#1D4ED8] font-semibold'
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               }`
             }
@@ -66,8 +66,8 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all font-display font-medium text-sm ${
                   isActive
-                    ? 'bg-[#481b00]/10 text-[#eb6905] border-r-4 border-[#eb6905] font-semibold'
-                    : 'text-[#eb6905] hover:bg-[#481b00]/10'
+                    ? 'bg-[#78350F]/10 text-[#F59E0B] border-r-4 border-[#F59E0B] font-semibold'
+                    : 'text-[#F59E0B] hover:bg-[#78350F]/10'
                 }`
               }
             >
@@ -81,7 +81,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       <div className="px-4 mt-auto space-y-4">
         <button
           onClick={() => setShowBlockerModal(true)}
-          className="w-full py-2.5 bg-[#481b00] text-[#eb6905] rounded-lg font-semibold text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all"
+          className="w-full py-2.5 bg-[#78350F] text-[#F59E0B] rounded-lg font-semibold text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all"
         >
           <span className="material-symbols-outlined text-lg">report_problem</span>
           Report Blocker

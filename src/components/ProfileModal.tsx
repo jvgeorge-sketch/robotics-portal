@@ -119,19 +119,19 @@ export default function ProfileModal({ onClose, initialTab = 'profile' }: Props)
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-[#091426] px-6 pt-6 pb-0 text-white">
+        <div className="bg-[#1E3A8A] px-6 pt-6 pb-0 text-white">
           <div className="flex items-start justify-between mb-5">
             <div className="flex items-center gap-4">
               {avatarUrl ? (
-                <img src={avatarUrl} alt={displayName} className="w-16 h-16 rounded-full border-4 border-[#57dffe]/40 object-cover" />
+                <img src={avatarUrl} alt={displayName} className="w-16 h-16 rounded-full border-4 border-[#FBBF24]/40 object-cover" />
               ) : (
-                <div className="w-16 h-16 rounded-full bg-[#1e293b] border-4 border-[#57dffe]/40 flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-[#1E3A8A] border-4 border-[#FBBF24]/40 flex items-center justify-center">
                   <span className="font-display font-bold text-xl text-white">{getInitials(displayName)}</span>
                 </div>
               )}
               <div>
                 <h2 className="font-display text-xl font-bold">{displayName}</h2>
-                <p className="text-[#57dffe] text-sm">{ROLE_LABELS[currentUser?.role || 'student']}</p>
+                <p className="text-[#FBBF24] text-sm">{ROLE_LABELS[currentUser?.role || 'student']}</p>
                 <p className="text-white/50 text-xs mt-0.5 font-mono">@{username}</p>
               </div>
             </div>
@@ -144,7 +144,7 @@ export default function ProfileModal({ onClose, initialTab = 'profile' }: Props)
           <div className="flex border-b border-white/10">
             {(['profile','settings'] as const).map(t => (
               <button key={t} onClick={() => setTab(t)}
-                className={`px-5 py-2.5 text-sm font-bold capitalize transition-colors border-b-2 ${tab === t ? 'border-[#57dffe] text-[#57dffe]' : 'border-transparent text-white/50 hover:text-white/80'}`}>
+                className={`px-5 py-2.5 text-sm font-bold capitalize transition-colors border-b-2 ${tab === t ? 'border-[#FBBF24] text-[#FBBF24]' : 'border-transparent text-white/50 hover:text-white/80'}`}>
                 {t}
               </button>
             ))}
@@ -158,8 +158,8 @@ export default function ProfileModal({ onClose, initialTab = 'profile' }: Props)
               {/* Stats row */}
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { label: 'Season Pts',  value: (currentUser?.season_points  ?? 0).toLocaleString(), color: 'text-[#00687a]' },
-                  { label: 'Total Pts',   value: (currentUser?.total_points   ?? 0).toLocaleString(), color: 'text-[#091426]' },
+                  { label: 'Season Pts',  value: (currentUser?.season_points  ?? 0).toLocaleString(), color: 'text-[#1D4ED8]' },
+                  { label: 'Total Pts',   value: (currentUser?.total_points   ?? 0).toLocaleString(), color: 'text-[#1E3A8A]' },
                   { label: 'Day Streak',  value: `${currentUser?.daily_streak ?? 0}d`,               color: 'text-[#ba1a1a]' },
                 ].map(s => (
                   <div key={s.label} className="bg-slate-50 rounded-xl p-3 text-center border border-slate-100">
@@ -174,9 +174,9 @@ export default function ProfileModal({ onClose, initialTab = 'profile' }: Props)
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Display Name</label>
                 <div className="flex gap-2">
                   <input value={name} onChange={e => setName(e.target.value)}
-                    className="flex-1 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20" />
+                    className="flex-1 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20" />
                   <button onClick={saveName} disabled={saving || name === currentUser?.full_name}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-colors flex items-center gap-1.5 ${saved ? 'bg-emerald-500 text-white' : 'bg-[#00687a] text-white hover:bg-[#005566] disabled:opacity-40'}`}>
+                    className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-colors flex items-center gap-1.5 ${saved ? 'bg-emerald-500 text-white' : 'bg-[#1D4ED8] text-white hover:bg-[#1E3A8A] disabled:opacity-40'}`}>
                     {saved
                       ? <><span className="material-symbols-outlined text-lg">check</span>Saved</>
                       : saving
@@ -197,12 +197,12 @@ export default function ProfileModal({ onClose, initialTab = 'profile' }: Props)
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     placeholder="your@email.com"
-                    className="flex-1 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20"
+                    className="flex-1 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
                   />
                   <button
                     onClick={saveEmail}
                     disabled={savingEmail || email === (currentUser?.email || '')}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-colors flex items-center gap-1.5 ${savedEmail ? 'bg-emerald-500 text-white' : 'bg-[#00687a] text-white hover:bg-[#005566] disabled:opacity-40'}`}
+                    className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-colors flex items-center gap-1.5 ${savedEmail ? 'bg-emerald-500 text-white' : 'bg-[#1D4ED8] text-white hover:bg-[#1E3A8A] disabled:opacity-40'}`}
                   >
                     {savedEmail
                       ? <><span className="material-symbols-outlined text-lg">check</span>Saved</>
@@ -281,7 +281,7 @@ export default function ProfileModal({ onClose, initialTab = 'profile' }: Props)
                         value={currentPw}
                         onChange={e => { setCurrentPw(e.target.value); setPwError('') }}
                         placeholder="Enter current password"
-                        className="w-full border border-slate-200 rounded-xl px-4 py-2.5 pr-10 text-sm focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20"
+                        className="w-full border border-slate-200 rounded-xl px-4 py-2.5 pr-10 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
                       />
                       <button type="button" onClick={() => setShowPw(v => !v)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
@@ -298,7 +298,7 @@ export default function ProfileModal({ onClose, initialTab = 'profile' }: Props)
                       value={newPw}
                       onChange={e => { setNewPw(e.target.value); setPwError('') }}
                       placeholder="Min. 6 characters"
-                      className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20"
+                      className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
                     />
                   </div>
                   <div>
@@ -308,7 +308,7 @@ export default function ProfileModal({ onClose, initialTab = 'profile' }: Props)
                       value={confirmPw}
                       onChange={e => { setConfirmPw(e.target.value); setPwError('') }}
                       placeholder="Re-enter new password"
-                      className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20"
+                      className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
                     />
                   </div>
                   {pwError && (
@@ -317,7 +317,7 @@ export default function ProfileModal({ onClose, initialTab = 'profile' }: Props)
                   <button
                     type="submit"
                     disabled={savingPw || !currentPw || !newPw || !confirmPw}
-                    className="w-full py-2.5 bg-[#00687a] text-white rounded-xl text-sm font-bold hover:bg-[#005566] disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+                    className="w-full py-2.5 bg-[#1D4ED8] text-white rounded-xl text-sm font-bold hover:bg-[#1E3A8A] disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
                   >
                     {savingPw
                       ? <><span className="material-symbols-outlined animate-spin text-lg">refresh</span>Updating…</>

@@ -41,8 +41,8 @@ const STATUS_COLOR: Record<string, string> = {
 }
 const PRIORITY_COLOR: Record<string, string> = {
   low:      'bg-slate-100 text-slate-600',
-  medium:   'bg-[#57dffe]/20 text-[#006172]',
-  high:     'bg-[#ffdbca] text-[#341100]',
+  medium:   'bg-[#FBBF24]/20 text-[#1E40AF]',
+  high:     'bg-[#FDE68A] text-[#78350F]',
   critical: 'bg-[#ffdad6] text-[#93000a]',
 }
 
@@ -186,7 +186,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated }: Props) {
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div className="absolute inset-0 bg-black/50" onClick={onClose} />
         <div className="relative bg-white rounded-2xl p-8">
-          <span className="material-symbols-outlined text-[#00687a] text-4xl animate-spin">refresh</span>
+          <span className="material-symbols-outlined text-[#1D4ED8] text-4xl animate-spin">refresh</span>
         </div>
       </div>
     )
@@ -200,9 +200,9 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated }: Props) {
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 bg-[#091426] text-white flex-shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 bg-[#1E3A8A] text-white flex-shrink-0">
           <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-[#57dffe]">task_alt</span>
+            <span className="material-symbols-outlined text-[#FBBF24]">task_alt</span>
             <span className="font-display font-bold text-lg truncate max-w-md">{task.title}</span>
           </div>
           <div className="flex items-center gap-2">
@@ -228,14 +228,14 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated }: Props) {
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Title</label>
                 <input value={title} onChange={e => setTitle(e.target.value)}
-                  className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20" />
+                  className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20" />
               </div>
 
               {/* Description */}
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Description</label>
                 <textarea value={desc} onChange={e => setDesc(e.target.value)} rows={3}
-                  className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20 resize-none" />
+                  className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20 resize-none" />
               </div>
 
               {/* Status + Priority */}
@@ -245,7 +245,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated }: Props) {
                   <div className="flex flex-wrap gap-2">
                     {STATUSES.map(s => (
                       <button key={s} type="button" onClick={() => setStatus(s)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize border transition-all ${status === s ? 'bg-[#091426] text-white border-[#091426]' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-400'}`}>
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize border transition-all ${status === s ? 'bg-[#1E3A8A] text-white border-[#1E3A8A]' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-400'}`}>
                         {s.replace('_',' ')}
                       </button>
                     ))}
@@ -256,7 +256,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated }: Props) {
                   <div className="flex flex-wrap gap-2">
                     {PRIORITIES.map(p => (
                       <button key={p} type="button" onClick={() => setPriority(p)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize border transition-all ${priority === p ? 'bg-[#091426] text-white border-[#091426]' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-400'}`}>
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize border transition-all ${priority === p ? 'bg-[#1E3A8A] text-white border-[#1E3A8A]' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-400'}`}>
                         {p}
                       </button>
                     ))}
@@ -269,7 +269,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated }: Props) {
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Team</label>
                   <select value={teamId} onChange={e => setTeamId(e.target.value)}
-                    className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#00687a]">
+                    className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#1D4ED8]">
                     <option value="">Open Pool</option>
                     {teams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                   </select>
@@ -277,7 +277,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated }: Props) {
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Assignee</label>
                   <select value={assignedTo} onChange={e => setAssignedTo(e.target.value)}
-                    className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#00687a]">
+                    className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#1D4ED8]">
                     <option value="">Unassigned</option>
                     {profiles.map(p => <option key={p.id} value={p.id}>{p.full_name}</option>)}
                   </select>
@@ -289,13 +289,13 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated }: Props) {
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Points</label>
                   <input type="number" min={1} value={points} onChange={e => setPoints(Number(e.target.value))}
-                    className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#00687a]" />
+                    className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8]" />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Est. Minutes</label>
                   <input type="number" min={1} value={estMins} placeholder="—"
                     onChange={e => setEstMins(e.target.value === '' ? '' : Number(e.target.value))}
-                    className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#00687a]" />
+                    className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8]" />
                 </div>
               </div>
 
@@ -304,7 +304,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated }: Props) {
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Tags</label>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {tags.map(tag => (
-                    <span key={tag} className="flex items-center gap-1 bg-[#e5eeff] text-[#006172] text-xs font-bold px-2 py-1 rounded-lg">
+                    <span key={tag} className="flex items-center gap-1 bg-[#EFF6FF] text-[#1E40AF] text-xs font-bold px-2 py-1 rounded-lg">
                       {tag}
                       <button type="button" onClick={() => setTags(t => t.filter(x => x !== tag))}>
                         <span className="material-symbols-outlined" style={{ fontSize: 14 }}>close</span>
@@ -314,7 +314,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated }: Props) {
                 </div>
                 <input value={tagInput} onChange={e => setTagInput(e.target.value)} onKeyDown={addTag}
                   placeholder="Type a tag and press Enter"
-                  className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#00687a]" />
+                  className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8]" />
               </div>
             </>
           ) : (
@@ -327,7 +327,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated }: Props) {
                 <span className={`px-3 py-1 rounded-full text-xs font-bold capitalize ${PRIORITY_COLOR[task.priority] || 'bg-slate-100 text-slate-600'}`}>
                   {task.priority} priority
                 </span>
-                <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#e5eeff] text-[#006172]">
+                <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#EFF6FF] text-[#1E40AF]">
                   {task.points_value} pts
                 </span>
                 {task.estimated_minutes && (
@@ -360,7 +360,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated }: Props) {
                   <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Tags</p>
                   <div className="flex flex-wrap gap-1">
                     {task.tags.length > 0
-                      ? task.tags.map(t => <span key={t} className="bg-[#e5eeff] text-[#006172] text-[10px] font-bold px-2 py-0.5 rounded">{t}</span>)
+                      ? task.tags.map(t => <span key={t} className="bg-[#EFF6FF] text-[#1E40AF] text-[10px] font-bold px-2 py-0.5 rounded">{t}</span>)
                       : <span className="text-slate-400 text-xs">None</span>
                     }
                   </div>
@@ -404,7 +404,7 @@ export default function TaskDetailModal({ taskId, onClose, onUpdated }: Props) {
               Cancel
             </button>
             <button onClick={save} disabled={saving}
-              className="flex-1 py-2.5 bg-[#00687a] text-white rounded-xl text-sm font-bold hover:bg-[#005566] disabled:opacity-50 flex items-center justify-center gap-2">
+              className="flex-1 py-2.5 bg-[#1D4ED8] text-white rounded-xl text-sm font-bold hover:bg-[#1E3A8A] disabled:opacity-50 flex items-center justify-center gap-2">
               {saving ? <><span className="material-symbols-outlined animate-spin text-lg">refresh</span>Saving…</> : 'Save Changes'}
             </button>
           </div>

@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { hashPassword } from '../lib/auth'
 import { useAuth } from '../context/AuthContext'
-import type { Profile, Team } from '../lib/database.types'
+import type { Profile, Team, AccessRequest } from '../lib/database.types'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -31,8 +31,8 @@ const ROLE_LABELS: Record<string, string> = {
 }
 
 const ROLE_COLORS: Record<string, string> = {
-  instructor: 'bg-[#481b00] text-[#eb6905]',
-  team_lead: 'bg-[#e5eeff] text-[#006172]',
+  instructor: 'bg-[#78350F] text-[#F59E0B]',
+  team_lead: 'bg-[#DBEAFE] text-[#1E40AF]',
   student: 'bg-slate-100 text-slate-600',
 }
 
@@ -46,14 +46,16 @@ function CreateUserModal({
   teams,
   onClose,
   onCreated,
+  prefill,
 }: {
   teams: Team[]
   onClose: () => void
   onCreated: () => void
+  prefill?: { fullName: string; requestId?: string }
 }) {
   const [form, setForm] = useState<CreateUserForm>({
-    username: '', fullName: '', role: 'student',
-    password: '', confirmPassword: '', teamId: '',
+    username: '', fullName: prefill?.fullName ?? '', role: 'student',
+    password: 'Monday99', confirmPassword: 'Monday99', teamId: '',
   })
   const [showPassword, setShowPassword] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -101,6 +103,7 @@ function CreateUserModal({
         season_points: 0,
         daily_streak: 0,
         is_active: true,
+        must_change_password: true,
       })
       .select()
       .single()
@@ -128,9 +131,9 @@ function CreateUserModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-between px-6 py-4 bg-[#091426] text-white">
+        <div className="flex items-center justify-between px-6 py-4 bg-[#1E3A8A] text-white">
           <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-[#57dffe]">person_add</span>
+            <span className="material-symbols-outlined text-[#FBBF24]">person_add</span>
             <h2 className="font-display text-lg font-bold">Create New User</h2>
           </div>
           <button onClick={onClose} className="text-white/60 hover:text-white transition-colors">
@@ -149,7 +152,7 @@ function CreateUserModal({
               onChange={e => update('username', e.target.value)}
               placeholder="e.g. jsmith (letters, numbers, _)"
               autoCapitalize="none"
-              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20"
+              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
             />
             <p className="text-[10px] text-slate-400 mt-1">3–20 chars, lowercase letters / numbers / underscore</p>
           </div>
@@ -163,7 +166,7 @@ function CreateUserModal({
               value={form.fullName}
               onChange={e => update('fullName', e.target.value)}
               placeholder="e.g. Jordan Smith"
-              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20"
+              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
             />
           </div>
 
@@ -178,7 +181,7 @@ function CreateUserModal({
                   onClick={() => update('role', r)}
                   className={`flex-1 py-2 rounded-xl text-xs font-bold capitalize transition-all border ${
                     form.role === r
-                      ? 'bg-[#00687a] text-white border-[#00687a]'
+                      ? 'bg-[#1D4ED8] text-white border-[#1D4ED8]'
                       : 'bg-white text-slate-500 border-slate-200 hover:border-slate-400'
                   }`}
                 >
@@ -199,7 +202,7 @@ function CreateUserModal({
                 value={form.password}
                 onChange={e => update('password', e.target.value)}
                 placeholder="Min. 6 characters"
-                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 pr-10 text-sm focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20"
+                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 pr-10 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
               />
               <button
                 type="button"
@@ -223,7 +226,7 @@ function CreateUserModal({
               value={form.confirmPassword}
               onChange={e => update('confirmPassword', e.target.value)}
               placeholder="Re-enter password"
-              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20"
+              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
             />
           </div>
 
@@ -233,7 +236,7 @@ function CreateUserModal({
             <select
               value={form.teamId}
               onChange={e => update('teamId', e.target.value)}
-              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20"
+              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
             >
               <option value="">— No team yet —</option>
               {teams.map(t => (
@@ -254,7 +257,7 @@ function CreateUserModal({
               Cancel
             </button>
             <button type="submit" disabled={saving}
-              className="flex-1 py-2.5 bg-[#00687a] hover:bg-[#005566] text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+              className="flex-1 py-2.5 bg-[#1D4ED8] hover:bg-[#1E3A8A] text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
               {saving
                 ? <><span className="material-symbols-outlined text-lg animate-spin">refresh</span>Creating…</>
                 : <><span className="material-symbols-outlined text-lg">person_add</span>Create User</>
@@ -306,12 +309,12 @@ function ResetPasswordModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-between px-6 py-4 bg-[#091426] text-white">
+        <div className="flex items-center justify-between px-6 py-4 bg-[#1E3A8A] text-white">
           <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-[#57dffe]">lock_reset</span>
+            <span className="material-symbols-outlined text-[#FBBF24]">lock_reset</span>
             <div>
               <h2 className="font-display text-base font-bold">Reset Password</h2>
-              <p className="text-[#8590a6] text-xs">@{target.username}</p>
+              <p className="text-[#6B7280] text-xs">@{target.username}</p>
             </div>
           </div>
           <button onClick={onClose} className="text-white/60 hover:text-white transition-colors">
@@ -328,7 +331,7 @@ function ResetPasswordModal({
                 value={newPassword}
                 onChange={e => setNewPassword(e.target.value)}
                 placeholder="Min. 6 characters"
-                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 pr-10 text-sm focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20"
+                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 pr-10 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
               />
               <button type="button" onClick={() => setShowPassword(v => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
@@ -345,7 +348,7 @@ function ResetPasswordModal({
               value={confirm}
               onChange={e => setConfirm(e.target.value)}
               placeholder="Re-enter password"
-              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20"
+              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
             />
           </div>
           {error && (
@@ -357,7 +360,7 @@ function ResetPasswordModal({
               Cancel
             </button>
             <button type="submit" disabled={saving}
-              className="flex-1 py-2.5 bg-[#00687a] hover:bg-[#005566] text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+              className="flex-1 py-2.5 bg-[#1D4ED8] hover:bg-[#1E3A8A] text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
               {saving
                 ? <span className="material-symbols-outlined text-lg animate-spin">refresh</span>
                 : 'Reset Password'
@@ -391,12 +394,16 @@ export default function AdminPanel() {
   const [deleteError, setDeleteError] = useState<string | null>(null)
   const [showSeasonReset, setShowSeasonReset] = useState(false)
   const [resettingSeason, setResettingSeason] = useState(false)
+  const [accessRequests, setAccessRequests] = useState<AccessRequest[]>([])
+  const [approveTarget, setApproveTarget] = useState<AccessRequest | null>(null)
+  const [denyingId, setDenyingId] = useState<string | null>(null)
 
   const load = useCallback(async () => {
-    const [{ data: profiles }, { data: allTeams }, { data: members }] = await Promise.all([
+    const [{ data: profiles }, { data: allTeams }, { data: members }, { data: requests }] = await Promise.all([
       supabase.from('profiles').select('*').order('created_at'),
       supabase.from('teams').select('*').order('name'),
       supabase.from('team_members').select('user_id, team_id, is_lead'),
+      supabase.from('access_requests').select('*').order('created_at', { ascending: false }),
     ])
 
     const teamMap: Record<string, string> = {}
@@ -416,6 +423,7 @@ export default function AdminPanel() {
       isLead: leadMap[p.id] || false,
     })))
     setTeams(allTeams || [])
+    setAccessRequests((requests || []) as AccessRequest[])
     setLoading(false)
   }, [])
 
@@ -518,6 +526,13 @@ export default function AdminPanel() {
     URL.revokeObjectURL(url)
   }
 
+  async function denyRequest(id: string) {
+    setDenyingId(id)
+    await supabase.from('access_requests').update({ status: 'denied', reviewed_at: new Date().toISOString(), reviewed_by: currentUser?.id ?? null }).eq('id', id)
+    await load()
+    setDenyingId(null)
+  }
+
   async function resetSeason() {
     setResettingSeason(true)
     await supabase.from('profiles').update({ season_points: 0 }).neq('id', '')
@@ -532,7 +547,7 @@ export default function AdminPanel() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <span className="material-symbols-outlined text-[#00687a] text-4xl animate-spin">refresh</span>
+        <span className="material-symbols-outlined text-[#1D4ED8] text-4xl animate-spin">refresh</span>
       </div>
     )
   }
@@ -543,12 +558,12 @@ export default function AdminPanel() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="bg-[#481b00] text-[#eb6905] text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">
+            <span className="bg-[#78350F] text-[#F59E0B] text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">
               Instructor Console
             </span>
           </div>
-          <h1 className="font-display text-3xl font-bold text-[#0b1c30]">Admin Panel</h1>
-          <p className="text-[#45474c] mt-1">
+          <h1 className="font-display text-3xl font-bold text-[#1F2937]">Admin Panel</h1>
+          <p className="text-[#4B5563] mt-1">
             Create accounts, assign teams, and manage portal access.
           </p>
         </div>
@@ -569,7 +584,7 @@ export default function AdminPanel() {
           </button>
           <button
             onClick={() => setShowCreate(true)}
-            className="bg-[#00687a] text-white px-5 py-2.5 rounded-lg font-bold flex items-center gap-2 hover:bg-[#005566] transition-all active:scale-95"
+            className="bg-[#1D4ED8] text-white px-5 py-2.5 rounded-lg font-bold flex items-center gap-2 hover:bg-[#1E3A8A] transition-all active:scale-95"
           >
             <span className="material-symbols-outlined text-xl">person_add</span>
             Add User
@@ -580,7 +595,7 @@ export default function AdminPanel() {
       {/* Stats row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Total Users', value: users.length, icon: 'group', color: '#00687a' },
+          { label: 'Total Users', value: users.length, icon: 'group', color: '#1D4ED8' },
           { label: 'Students', value: users.filter(u => u.role === 'student').length, icon: 'school', color: '#6366f1' },
           { label: 'Team Leads', value: users.filter(u => u.role === 'team_lead').length, icon: 'manage_accounts', color: '#f59e0b' },
           { label: 'Active Teams', value: teams.length, icon: 'hub', color: '#10b981' },
@@ -602,6 +617,51 @@ export default function AdminPanel() {
           <button onClick={() => setDeleteError(null)} className="ml-auto text-[#93000a]/60 hover:text-[#93000a]">
             <span className="material-symbols-outlined text-base">close</span>
           </button>
+        </div>
+      )}
+
+      {/* Access Requests */}
+      {accessRequests.filter(r => r.status === 'pending').length > 0 && (
+        <div className="bg-white border border-[#FBBF24]/40 rounded-xl overflow-hidden shadow-sm mb-6">
+          <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-amber-50">
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-[#F59E0B]">how_to_reg</span>
+              <h3 className="font-display text-lg font-semibold text-slate-900">Access Requests</h3>
+            </div>
+            <span className="bg-[#FBBF24] text-[#78350F] text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">
+              {accessRequests.filter(r => r.status === 'pending').length} pending
+            </span>
+          </div>
+          <div className="divide-y divide-slate-100">
+            {accessRequests.filter(r => r.status === 'pending').map(req => (
+              <div key={req.id} className="px-6 py-4 flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-sm text-[#1F2937]">{req.full_name}</p>
+                  <p className="text-xs text-[#4B5563] mt-0.5">{req.email}</p>
+                  {req.message && (
+                    <p className="text-xs text-slate-400 mt-1.5 italic">"{req.message}"</p>
+                  )}
+                  <p className="text-[10px] text-slate-300 mt-1.5">{new Date(req.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <button
+                    onClick={() => denyRequest(req.id)}
+                    disabled={denyingId === req.id}
+                    className="px-3 py-1.5 border border-slate-200 text-slate-500 hover:bg-[#ffdad6] hover:text-[#93000a] hover:border-[#ba1a1a]/20 rounded-lg text-xs font-bold transition-colors disabled:opacity-40"
+                  >
+                    Deny
+                  </button>
+                  <button
+                    onClick={() => setApproveTarget(req)}
+                    className="px-3 py-1.5 bg-[#1D4ED8] hover:bg-[#1E3A8A] text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5"
+                  >
+                    <span className="material-symbols-outlined text-sm">person_add</span>
+                    Approve
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -637,11 +697,11 @@ export default function AdminPanel() {
                       {/* Member */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-[#1e293b] flex items-center justify-center flex-shrink-0">
+                          <div className="w-9 h-9 rounded-full bg-[#1E3A8A] flex items-center justify-center flex-shrink-0">
                             <span className="text-white text-xs font-bold font-display">{initials(u.full_name)}</span>
                           </div>
                           <div>
-                            <p className="font-bold text-sm text-[#091426]">{u.full_name}</p>
+                            <p className="font-bold text-sm text-[#1E3A8A]">{u.full_name}</p>
                             <p className="text-[10px] text-slate-400 font-mono">@{u.username}</p>
                           </div>
                         </div>
@@ -661,7 +721,7 @@ export default function AdminPanel() {
                             value={u.teamId || ''}
                             disabled={saving === u.id}
                             onChange={e => assignTeam(u.id, e.target.value)}
-                            className="border border-slate-200 rounded-lg px-3 py-1.5 text-xs bg-white text-slate-700 focus:outline-none focus:border-[#00687a] disabled:opacity-50"
+                            className="border border-slate-200 rounded-lg px-3 py-1.5 text-xs bg-white text-slate-700 focus:outline-none focus:border-[#1D4ED8] disabled:opacity-50"
                           >
                             <option value="">— No team —</option>
                             {teams.map(t => (
@@ -676,15 +736,15 @@ export default function AdminPanel() {
                               title={u.isLead ? 'Remove team lead' : 'Set as team lead'}
                               className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase border transition-all disabled:opacity-50 ${
                                 u.isLead
-                                  ? 'bg-[#e5eeff] text-[#006172] border-[#006172]/30 hover:bg-[#ffdad6] hover:text-[#93000a] hover:border-[#93000a]/30'
-                                  : 'bg-white text-slate-400 border-slate-200 hover:bg-[#e5eeff] hover:text-[#006172] hover:border-[#006172]/30'
+                                  ? 'bg-[#DBEAFE] text-[#1E40AF] border-[#1E40AF]/30 hover:bg-[#ffdad6] hover:text-[#93000a] hover:border-[#93000a]/30'
+                                  : 'bg-white text-slate-400 border-slate-200 hover:bg-[#DBEAFE] hover:text-[#1E40AF] hover:border-[#1E40AF]/30'
                               }`}
                             >
                               {u.isLead ? '★ Lead' : '☆ Lead'}
                             </button>
                           )}
                           {saving === u.id && (
-                            <span className="material-symbols-outlined text-[#00687a] text-sm animate-spin align-middle">refresh</span>
+                            <span className="material-symbols-outlined text-[#1D4ED8] text-sm animate-spin align-middle">refresh</span>
                           )}
                         </div>
                       </td>
@@ -703,7 +763,7 @@ export default function AdminPanel() {
                           <button
                             onClick={() => setResetTarget(u)}
                             title="Reset password"
-                            className="p-1.5 text-slate-400 hover:text-[#00687a] hover:bg-[#e5eeff] rounded-lg transition-colors"
+                            className="p-1.5 text-slate-400 hover:text-[#1D4ED8] hover:bg-[#DBEAFE] rounded-lg transition-colors"
                           >
                             <span className="material-symbols-outlined text-lg">lock_reset</span>
                           </button>
@@ -782,22 +842,22 @@ export default function AdminPanel() {
               <>
                 <div key={u.id} className="px-6 py-4 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-[#481b00] flex items-center justify-center">
-                      <span className="text-[#eb6905] text-xs font-bold font-display">{initials(u.full_name)}</span>
+                    <div className="w-9 h-9 rounded-full bg-[#78350F] flex items-center justify-center">
+                      <span className="text-[#F59E0B] text-xs font-bold font-display">{initials(u.full_name)}</span>
                     </div>
                     <div>
-                      <p className="font-bold text-sm text-[#091426]">{u.full_name}</p>
+                      <p className="font-bold text-sm text-[#1E3A8A]">{u.full_name}</p>
                       <p className="text-[10px] text-slate-400 font-mono">@{u.username}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-[10px] font-black px-2 py-1 rounded uppercase tracking-wider bg-[#481b00] text-[#eb6905]">
+                    <span className="text-[10px] font-black px-2 py-1 rounded uppercase tracking-wider bg-[#78350F] text-[#F59E0B]">
                       Instructor
                     </span>
                     <button
                       onClick={() => setResetTarget(u)}
                       title="Reset password"
-                      className="p-1.5 text-slate-400 hover:text-[#00687a] hover:bg-[#e5eeff] rounded-lg transition-colors"
+                      className="p-1.5 text-slate-400 hover:text-[#1D4ED8] hover:bg-[#DBEAFE] rounded-lg transition-colors"
                     >
                       <span className="material-symbols-outlined text-lg">lock_reset</span>
                     </button>
@@ -895,6 +955,18 @@ export default function AdminPanel() {
           target={resetTarget}
           onClose={() => setResetTarget(null)}
           onDone={load}
+        />
+      )}
+      {approveTarget && (
+        <CreateUserModal
+          teams={teams}
+          prefill={{ fullName: approveTarget.full_name, requestId: approveTarget.id }}
+          onClose={() => setApproveTarget(null)}
+          onCreated={async () => {
+            await supabase.from('access_requests').update({ status: 'approved', reviewed_at: new Date().toISOString(), reviewed_by: currentUser?.id ?? null }).eq('id', approveTarget.id)
+            setApproveTarget(null)
+            await load()
+          }}
         />
       )}
     </div>

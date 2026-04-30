@@ -1,6 +1,22 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import RequestAccessModal from '../components/RequestAccessModal'
+
+const C = {
+  paper:       'oklch(0.975 0.013 85)',
+  paper2:      'oklch(0.955 0.015 80)',
+  ink:         '#1F2937',
+  inkSoft:     '#4B5563',
+  inkFaint:    '#9CA3AF',
+  rule:        '#E5E7EB',
+  ruleStrong:  '#D1D5DB',
+  blue:        '#1D4ED8',
+  blueDeep:    '#1E3A8A',
+  blueDarker:  '#172554',
+  gold:        '#FBBF24',
+  goldDeep:    '#F59E0B',
+}
 
 export default function Login() {
   const { signIn } = useAuth()
@@ -9,8 +25,10 @@ export default function Login() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showRequestAccess, setShowRequestAccess] = useState(false)
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -30,136 +48,443 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-[#091426] flex items-center justify-center p-6">
-      {/* Circuit background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <svg className="w-full h-full opacity-5" viewBox="0 0 1200 800" fill="none">
-          <path d="M0 400H200L250 300H500L550 500H750L800 400H1200" stroke="#57dffe" strokeWidth="2" />
-          <path d="M0 200H150L200 100H400L450 200H600" stroke="#57dffe" strokeWidth="1.5" />
-          <path d="M600 600H800L850 700H1050L1100 600H1200" stroke="#57dffe" strokeWidth="1.5" />
-          {[250, 550, 800].map(cx => (
-            <circle key={cx} cx={cx} cy={cx < 400 ? 300 : cx < 700 ? 500 : 400} r="6" fill="#57dffe" />
-          ))}
-          {[200, 450, 850, 1100].map(cx => (
-            <circle key={cx} cx={cx} cy={cx < 300 ? 100 : cx < 500 ? 200 : cx < 900 ? 700 : 600} r="4" fill="#57dffe" />
-          ))}
-        </svg>
-      </div>
+    <div style={{
+      position: 'relative',
+      minHeight: '100vh',
+      background: C.paper,
+      fontFamily: "'Inter', system-ui, sans-serif",
+      color: C.ink,
+      WebkitFontSmoothing: 'antialiased',
+    }}>
+      {/* Gradient overlays */}
+      <div style={{
+        position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0,
+        background: `radial-gradient(ellipse at 20% 0%, oklch(0.97 0.025 75 / 0.7), transparent 60%),
+                     radial-gradient(ellipse at 100% 100%, oklch(0.92 0.03 60 / 0.5), transparent 55%)`,
+      }} />
+      {/* Dot pattern */}
+      <div style={{
+        position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0,
+        backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(31,41,55,0.04) 1px, transparent 1.5px)',
+        backgroundSize: '3px 3px',
+        mixBlendMode: 'multiply',
+      }} />
 
-      <div className="relative z-10 w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#1e293b] rounded-2xl mb-5 border border-[#57dffe]/20">
-            <span className="material-symbols-filled text-[#57dffe] text-4xl">precision_manufacturing</span>
+      {/* Two-column layout */}
+      <div style={{
+        position: 'relative', zIndex: 1,
+        minHeight: '100vh',
+        display: 'grid',
+        gridTemplateColumns: '1.05fr 1fr',
+      }}>
+
+        {/* ===== LEFT: Brand / Crest ===== */}
+        <aside style={{
+          position: 'relative',
+          padding: '56px 64px',
+          display: 'flex', flexDirection: 'column',
+          background: `linear-gradient(180deg, ${C.blue} 0%, ${C.blueDarker} 100%)`,
+          color: 'oklch(0.96 0.008 260)',
+          overflow: 'hidden',
+        }}>
+          {/* Double border (replaces ::before / ::after pseudo-elements) */}
+          <div style={{
+            position: 'absolute', inset: 24,
+            border: '1px solid rgba(251,191,36,0.40)',
+            pointerEvents: 'none',
+          }} />
+          <div style={{
+            position: 'absolute', inset: 30,
+            border: '1px solid rgba(251,191,36,0.18)',
+            pointerEvents: 'none',
+          }} />
+
+          {/* Header row */}
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24,
+            color: 'rgba(248,250,252,0.85)',
+            fontSize: 11.5, letterSpacing: '0.22em', textTransform: 'uppercase',
+            whiteSpace: 'nowrap',
+          }}>
+            <span>Eagle Army · Robotics</span>
+            {/* Eagle Army logo — drop eagle-army-logo.png into robotics-portal/public/ */}
+            <img
+              src="/eagle-army-logo.png"
+              alt="Eagle Army"
+              style={{ height: 48, width: 'auto', objectFit: 'contain', borderRadius: 6, display: 'block' }}
+              onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+            />
           </div>
-          <h1 className="font-display text-3xl font-bold text-white tracking-tight">TECH COMMAND</h1>
-          <p className="text-[#8590a6] mt-1 text-sm">Robotics Project Portal · Season 2024</p>
-        </div>
 
-        {/* Card */}
-        <div className="bg-[#0f1f35] border border-[#1e293b] rounded-2xl p-8 shadow-2xl">
-          <h2 className="font-display text-xl font-semibold text-white mb-1">Sign in to continue</h2>
-          <p className="text-[#8590a6] text-sm mb-7">
-            Use the credentials assigned by your instructor.
-          </p>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Username */}
-            <div>
-              <label className="block text-xs font-bold text-[#8590a6] uppercase tracking-wider mb-1.5">
-                Username
-              </label>
-              <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 material-symbols-outlined text-[#57dffe]" style={{ fontSize: 18 }}>
-                  person
-                </span>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={e => setUsername(e.target.value)}
-                  placeholder="your.username"
-                  autoComplete="username"
-                  autoCapitalize="none"
-                  className="w-full bg-[#1e293b] border border-[#2d3f55] text-white rounded-xl py-3 pl-10 pr-4 text-sm placeholder:text-[#4a5568] focus:outline-none focus:border-[#57dffe] focus:ring-1 focus:ring-[#57dffe]/30 transition-all"
-                />
-              </div>
+          {/* Crest + school info */}
+          <div style={{
+            flex: 1,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            textAlign: 'center',
+            padding: '24px 0',
+          }}>
+            {/* Real Sandburg Eagle logo — drop a transparent-background PNG into robotics-portal/public/eagle-logo.png */}
+            <div style={{
+              width: 200, height: 200, marginBottom: 36,
+              borderRadius: '50%',
+              background: '#ffffff',
+              border: '2px solid rgba(251,191,36,0.5)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              overflow: 'hidden',
+              boxShadow: '0 0 0 6px rgba(251,191,36,0.10)',
+            }}>
+              <img
+                src="/eagle-logo.png"
+                alt="Carl Sandburg High School Eagles"
+                style={{ width: '88%', height: '88%', objectFit: 'contain' }}
+              />
             </div>
 
-            {/* Password */}
-            <div>
-              <label className="block text-xs font-bold text-[#8590a6] uppercase tracking-wider mb-1.5">
-                Password
-              </label>
-              <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 material-symbols-outlined text-[#57dffe]" style={{ fontSize: 18 }}>
-                  lock
-                </span>
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  autoComplete="current-password"
-                  className="w-full bg-[#1e293b] border border-[#2d3f55] text-white rounded-xl py-3 pl-10 pr-10 text-sm placeholder:text-[#4a5568] focus:outline-none focus:border-[#57dffe] focus:ring-1 focus:ring-[#57dffe]/30 transition-all"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(v => !v)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#4a5568] hover:text-[#8590a6] transition-colors"
-                >
-                  <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
-                    {showPassword ? 'visibility_off' : 'visibility'}
-                  </span>
-                </button>
-              </div>
+            <div style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontWeight: 500, fontSize: 42, lineHeight: 1.1,
+              letterSpacing: '0.005em', color: '#ffffff', whiteSpace: 'nowrap',
+            }}>Carl Sandburg High School</div>
+
+            <div style={{
+              marginTop: 18,
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: 'italic', fontSize: 18,
+              color: C.gold, letterSpacing: '0.02em',
+            }}>Orland Park, Illinois</div>
+
+            <div style={{
+              marginTop: 22,
+              display: 'flex', alignItems: 'center', gap: 14, justifyContent: 'center',
+              color: 'rgba(248,250,252,0.9)',
+              fontSize: 12.5, letterSpacing: '0.42em', textTransform: 'uppercase',
+            }}>
+              <span style={{ width: 36, height: 1, background: 'rgba(251,191,36,0.7)', display: 'inline-block' }}/>
+              FIRST Robotics Competition
+              <span style={{ width: 36, height: 1, background: 'rgba(251,191,36,0.7)', display: 'inline-block' }}/>
             </div>
 
-            {/* Error */}
-            {error && (
-              <div className="flex items-center gap-2 bg-[#ba1a1a]/10 border border-[#ba1a1a]/30 text-[#ff8a80] text-sm px-4 py-3 rounded-xl">
-                <span className="material-symbols-outlined text-lg">error</span>
-                {error}
-              </div>
-            )}
+            <p style={{
+              marginTop: 26,
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: 'italic', fontSize: 19,
+              color: 'rgba(255,255,255,0.92)', letterSpacing: '0.01em',
+              maxWidth: '36ch', lineHeight: 1.4,
+            }}>"Nothing happens unless first we dream." — Carl Sandburg</p>
+          </div>
 
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex items-center justify-center gap-2 bg-[#57dffe] text-[#091426] font-bold py-3.5 px-5 rounded-xl hover:bg-[#7ee8ff] active:scale-[0.98] transition-all shadow-lg disabled:opacity-60 disabled:cursor-not-allowed mt-2"
-            >
-              {loading ? (
-                <>
-                  <span className="material-symbols-outlined animate-spin text-lg">refresh</span>
-                  Signing in…
-                </>
-              ) : (
-                <>
-                  <span className="material-symbols-outlined text-lg">login</span>
-                  Sign In
-                </>
+          {/* Footer */}
+          <div style={{
+            display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24,
+            color: 'rgba(248,250,252,0.85)',
+            fontSize: 11.5, letterSpacing: '0.18em', textTransform: 'uppercase',
+          }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, whiteSpace: 'nowrap' }}>
+              <span style={{ color: C.gold, fontSize: 10.5, letterSpacing: '0.2em' }}>Team</span>
+              <span style={{
+                color: '#ffffff',
+                fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic',
+                textTransform: 'none', letterSpacing: '0.01em', fontSize: 15,
+              }}>FRC 3488</span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, whiteSpace: 'nowrap', textAlign: 'center' }}>
+              <span style={{ color: C.gold, fontSize: 10.5, letterSpacing: '0.2em' }}>Follow</span>
+              <span style={{
+                color: '#ffffff',
+                fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic',
+                textTransform: 'none', letterSpacing: '0.01em', fontSize: 15,
+              }}>X: @EagleArmy3488</span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, whiteSpace: 'nowrap', textAlign: 'right' }}>
+              <span style={{ color: C.gold, fontSize: 10.5, letterSpacing: '0.2em' }}>Season</span>
+              <span style={{
+                color: '#ffffff',
+                fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic',
+                textTransform: 'none', letterSpacing: '0.01em', fontSize: 15,
+              }}>MMXXVI</span>
+            </div>
+          </div>
+        </aside>
+
+        {/* ===== RIGHT: Form ===== */}
+        <main style={{
+          position: 'relative',
+          padding: '56px 64px',
+          display: 'flex', flexDirection: 'column',
+        }}>
+          {/* Top nav row */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              color: C.blue,
+              fontFamily: "'Inter', sans-serif",
+              fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase',
+              fontWeight: 500,
+            }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.goldDeep} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M12 2v4"/>
+                <circle cx="12" cy="2" r="0.8" fill={C.goldDeep}/>
+                <rect x="4" y="6" width="16" height="12" rx="3"/>
+                <circle cx="9" cy="12" r="1.2" fill={C.goldDeep}/>
+                <circle cx="15" cy="12" r="1.2" fill={C.goldDeep}/>
+                <path d="M9 16h6"/>
+                <path d="M2 13v2"/>
+                <path d="M22 13v2"/>
+              </svg>
+              Robotics Portal
+            </span>
+          </div>
+
+          {/* Form body */}
+          <div style={{
+            flex: 1,
+            display: 'flex', flexDirection: 'column', justifyContent: 'center',
+            maxWidth: 460, margin: '0 auto', width: '100%',
+            padding: '32px 0',
+          }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 14,
+              color: C.blue,
+              fontSize: 11.5, letterSpacing: '0.32em', textTransform: 'uppercase',
+              marginBottom: 22,
+            }}>
+              <span style={{ width: 28, height: 1, background: C.blue, display: 'inline-block' }}/>
+              Team Access
+            </div>
+
+            <h1 style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontWeight: 500, fontSize: 54, lineHeight: 1.04,
+              letterSpacing: '-0.01em', color: C.ink,
+            }}>
+              Welcome <em style={{ fontStyle: 'italic', color: C.blue }}>back</em>,<br/>Eagle.
+            </h1>
+            <p style={{
+              marginTop: 14, color: C.inkSoft,
+              fontSize: 15, lineHeight: 1.6, maxWidth: '42ch',
+            }}>
+              Sign in to manage tasks, track build progress, coordinate your team, and stay on top of the season timeline.
+            </p>
+
+            <form onSubmit={handleSubmit} style={{ marginTop: 36, display: 'flex', flexDirection: 'column', gap: 20 }}>
+              {/* Username */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <label htmlFor="u" style={{
+                  fontSize: 11.5, color: C.inkSoft,
+                  letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 500,
+                }}>Username</label>
+                <div style={{
+                  position: 'relative', display: 'flex', alignItems: 'center',
+                  background: 'oklch(1 0 0 / 0.6)',
+                  border: `1px solid ${C.ruleStrong}`,
+                  borderRadius: 2, height: 52, padding: '0 16px',
+                  transition: 'border-color .2s ease, box-shadow .2s ease',
+                }}>
+                  <input
+                    id="u"
+                    type="text"
+                    value={username}
+                    onChange={e => setUsername(e.target.value)}
+                    placeholder="firstname.lastname"
+                    autoComplete="username"
+                    autoCapitalize="none"
+                    style={{
+                      flex: 1, height: '100%',
+                      border: 0, outline: 0, background: 'transparent',
+                      font: "400 15.5px/1 'Inter', sans-serif",
+                      color: C.ink, letterSpacing: '0.005em',
+                    }}
+                    onFocus={e => {
+                      const p = e.target.parentElement!
+                      p.style.borderColor = C.blue
+                      p.style.background = '#fff'
+                      p.style.boxShadow = '0 0 0 3px rgba(29,78,216,0.15)'
+                    }}
+                    onBlur={e => {
+                      const p = e.target.parentElement!
+                      p.style.borderColor = C.ruleStrong
+                      p.style.background = 'oklch(1 0 0 / 0.6)'
+                      p.style.boxShadow = 'none'
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <label htmlFor="p" style={{
+                  fontSize: 11.5, color: C.inkSoft,
+                  letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 500,
+                }}>Password</label>
+                <div style={{
+                  position: 'relative', display: 'flex', alignItems: 'center',
+                  background: 'oklch(1 0 0 / 0.6)',
+                  border: `1px solid ${C.ruleStrong}`,
+                  borderRadius: 2, height: 52, padding: '0 16px',
+                  transition: 'border-color .2s ease, box-shadow .2s ease',
+                }}>
+                  <input
+                    id="p"
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder="enter your password"
+                    autoComplete="current-password"
+                    style={{
+                      flex: 1, height: '100%',
+                      border: 0, outline: 0, background: 'transparent',
+                      font: "400 15.5px/1 'Inter', sans-serif",
+                      color: C.ink, letterSpacing: '0.005em',
+                    }}
+                    onFocus={e => {
+                      const p = e.target.parentElement!
+                      p.style.borderColor = C.blue
+                      p.style.background = '#fff'
+                      p.style.boxShadow = '0 0 0 3px rgba(29,78,216,0.15)'
+                    }}
+                    onBlur={e => {
+                      const p = e.target.parentElement!
+                      p.style.borderColor = C.ruleStrong
+                      p.style.background = 'oklch(1 0 0 / 0.6)'
+                      p.style.boxShadow = 'none'
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(v => !v)}
+                    style={{
+                      background: 'transparent', border: 0,
+                      color: C.inkSoft, cursor: 'pointer',
+                      font: "500 12px 'Inter', sans-serif",
+                      letterSpacing: '0.16em', textTransform: 'uppercase',
+                      padding: '4px 6px', marginRight: -4,
+                    }}
+                  >
+                    {showPassword ? 'Hide' : 'Show'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Remember me + forgot password */}
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16,
+                marginTop: -2, fontSize: 13.5, whiteSpace: 'nowrap',
+              }}>
+                <label style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 10, cursor: 'pointer',
+                  color: C.ink, userSelect: 'none',
+                }}>
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={e => setRememberMe(e.target.checked)}
+                    style={{
+                      appearance: 'none', WebkitAppearance: 'none',
+                      width: 16, height: 16, border: `1px solid ${C.ruleStrong}`,
+                      background: rememberMe ? C.blue : '#fff',
+                      borderColor: rememberMe ? C.blue : C.ruleStrong,
+                      cursor: 'pointer', borderRadius: 2,
+                      display: 'inline-block', position: 'relative',
+                      transition: 'background .15s, border-color .15s',
+                    }}
+                  />
+                  <span>Remember me</span>
+                </label>
+                <a href="#" style={{
+                  color: C.blueDeep, textDecoration: 'none',
+                  fontStyle: 'italic',
+                  fontFamily: "'Cormorant Garamond', serif", fontSize: 16,
+                  borderBottom: '1px solid rgba(29,78,216,0.35)', paddingBottom: 1,
+                }}>Forgot password</a>
+              </div>
+
+              {/* Error */}
+              {error && (
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  background: 'rgba(186,26,26,0.08)',
+                  border: '1px solid rgba(186,26,26,0.25)',
+                  color: '#b91c1c',
+                  fontSize: 13.5, padding: '10px 14px', borderRadius: 2,
+                }}>
+                  {error}
+                </div>
               )}
-            </button>
-          </form>
 
-          <div className="mt-6 pt-6 border-t border-[#1e293b] space-y-2.5">
-            {[
-              { icon: 'shield', text: 'Accounts created by your instructor' },
-              { icon: 'group', text: 'Team assignments managed by instructor' },
-              { icon: 'visibility_off', text: 'Passwords are hashed — never stored in plain text' },
-            ].map(item => (
-              <div key={item.text} className="flex items-center gap-2.5 text-[#8590a6] text-xs">
-                <span className="material-symbols-outlined text-[#57dffe]" style={{ fontSize: 16 }}>{item.icon}</span>
-                {item.text}
-              </div>
-            ))}
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  marginTop: 8, height: 54, width: '100%',
+                  background: loading ? C.blueDeep : C.blue,
+                  color: '#ffffff',
+                  border: 0, borderRadius: 2,
+                  font: "500 13.5px 'Inter', sans-serif",
+                  letterSpacing: '0.22em', textTransform: 'uppercase',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14,
+                  transition: 'background .15s ease',
+                  opacity: loading ? 0.7 : 1,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <span>{loading ? 'Signing in…' : 'Sign in'}</span>
+                {!loading && (
+                  <span style={{ position: 'relative', width: 18, height: 1, background: C.gold, display: 'inline-block' }}>
+                    <span style={{
+                      content: '', position: 'absolute', right: -1, top: -3,
+                      width: 7, height: 7,
+                      borderTop: `1px solid ${C.gold}`, borderRight: `1px solid ${C.gold}`,
+                      transform: 'rotate(45deg)',
+                      display: 'block',
+                    }} />
+                  </span>
+                )}
+              </button>
+            </form>
+
+            <p style={{
+              marginTop: 30, textAlign: 'center',
+              color: C.inkSoft,
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: 'italic', fontSize: 16, letterSpacing: '0.01em',
+            }}>
+              New to the team this season?{' '}
+              <button
+                type="button"
+                onClick={() => setShowRequestAccess(true)}
+                style={{
+                  background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                  color: C.ink, textDecoration: 'none',
+                  borderBottom: `1px solid ${C.blue}`, paddingBottom: 1,
+                  fontFamily: "'Inter', sans-serif", fontSize: 13.5,
+                  letterSpacing: '0.04em', marginLeft: 6,
+                }}
+              >Request access</button>
+            </p>
           </div>
-        </div>
 
-        <p className="text-center text-[#8590a6] text-xs mt-6">
-          Problems signing in? Ask your instructor.
-        </p>
+          {/* Footer */}
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24,
+            color: C.inkFaint, fontSize: 11.5, letterSpacing: '0.04em', whiteSpace: 'nowrap',
+          }}>
+            <div>© 2026 CSHS Robotics</div>
+            <div>
+              <a href="#" style={{ color: C.inkSoft, textDecoration: 'none' }}>Privacy</a>
+              <span style={{ display: 'inline-block', width: 3, height: 3, borderRadius: '50%', background: C.inkFaint, margin: '0 10px', verticalAlign: 'middle' }}/>
+              <a href="#" style={{ color: C.inkSoft, textDecoration: 'none' }}>Terms</a>
+              <span style={{ display: 'inline-block', width: 3, height: 3, borderRadius: '50%', background: C.inkFaint, margin: '0 10px', verticalAlign: 'middle' }}/>
+              <a href="#" style={{ color: C.inkSoft, textDecoration: 'none' }}>Code of Conduct</a>
+            </div>
+          </div>
+        </main>
+
       </div>
+      {showRequestAccess && (
+        <RequestAccessModal onClose={() => setShowRequestAccess(false)} />
+      )}
     </div>
   )
 }

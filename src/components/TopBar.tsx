@@ -139,7 +139,7 @@ export default function TopBar({ onMenuClick }: TopBarProps) {
         <div className="relative hidden lg:block" ref={searchRef}>
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
           <input
-            className="bg-slate-100 border-none rounded-full py-1.5 pl-9 pr-4 text-sm w-64 focus:ring-2 focus:ring-[#00687a] outline-none"
+            className="bg-slate-100 border-none rounded-full py-1.5 pl-9 pr-4 text-sm w-64 focus:ring-2 focus:ring-[#1D4ED8] outline-none"
             placeholder="Search tasks..."
             type="text"
             value={searchQuery}
@@ -198,9 +198,9 @@ export default function TopBar({ onMenuClick }: TopBarProps) {
 
       <div className="flex items-center gap-3">
         {/* Points badge */}
-        <div className="hidden sm:flex items-center gap-1.5 bg-[#e5eeff] px-3 py-1.5 rounded-full">
-          <span className="material-symbols-filled text-[#00687a]" style={{ fontSize: 16 }}>emoji_events</span>
-          <span className="font-display font-bold text-[#091426] text-sm">{points.toLocaleString()} pts</span>
+        <div className="hidden sm:flex items-center gap-1.5 bg-[#EFF6FF] px-3 py-1.5 rounded-full">
+          <span className="material-symbols-filled text-[#1D4ED8]" style={{ fontSize: 16 }}>emoji_events</span>
+          <span className="font-display font-bold text-[#1E3A8A] text-sm">{points.toLocaleString()} pts</span>
         </div>
 
         {/* Notifications */}
@@ -232,7 +232,7 @@ export default function TopBar({ onMenuClick }: TopBarProps) {
                   {notifications.map(n => (
                     <div key={n.id} className="px-4 py-3 hover:bg-slate-50">
                       {n.task_title && (
-                        <p className="text-[10px] font-bold text-[#00687a] uppercase tracking-wider mb-0.5">{n.task_title}</p>
+                        <p className="text-[10px] font-bold text-[#1D4ED8] uppercase tracking-wider mb-0.5">{n.task_title}</p>
                       )}
                       <p className="text-sm text-slate-700 leading-snug">{n.description}</p>
                       <p className="text-[10px] text-slate-400 mt-1">
@@ -253,15 +253,15 @@ export default function TopBar({ onMenuClick }: TopBarProps) {
             className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full hover:bg-slate-100 transition-colors"
           >
             {avatarUrl ? (
-              <img src={avatarUrl} alt={displayName} className="w-7 h-7 rounded-full border-2 border-[#00687a] object-cover" />
+              <img src={avatarUrl} alt={displayName} className="w-7 h-7 rounded-full border-2 border-[#1D4ED8] object-cover" />
             ) : (
-              <div className="w-7 h-7 rounded-full bg-[#1e293b] border-2 border-[#00687a] flex items-center justify-center">
+              <div className="w-7 h-7 rounded-full bg-[#1E3A8A] border-2 border-[#1D4ED8] flex items-center justify-center">
                 <span className="text-white text-[10px] font-bold font-display">{getInitials(displayName)}</span>
               </div>
             )}
             <div className="hidden md:block text-left">
               <p className="text-xs font-bold text-slate-900 leading-tight">{displayName}</p>
-              <p className="text-[10px] text-[#00687a] font-bold uppercase tracking-tight">{role.replace('_', ' ')}</p>
+              <p className="text-[10px] text-[#1D4ED8] font-bold uppercase tracking-tight">{role.replace('_', ' ')}</p>
             </div>
             <span className="material-symbols-outlined text-slate-400 text-lg hidden md:block">expand_more</span>
           </button>

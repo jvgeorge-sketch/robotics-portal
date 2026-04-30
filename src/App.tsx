@@ -12,6 +12,7 @@ import Workspace from './pages/Workspace'
 import Leaderboard from './pages/Leaderboard'
 import Teams from './pages/Teams'
 import AdminPanel from './pages/AdminPanel'
+import ChangePassword from './pages/ChangePassword'
 
 export default function App() {
   if (isMissingConfig) return <SetupRequired />
@@ -23,7 +24,12 @@ export default function App() {
           {/* Public */}
           <Route path="/login" element={<Login />} />
 
-          {/* Protected */}
+          {/* Protected — password change (shown before anything else if must_change_password) */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/change-password" element={<ChangePassword />} />
+          </Route>
+
+          {/* Protected — main app */}
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
               <Route path="/" element={<Dashboard />} />

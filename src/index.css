@@ -4,58 +4,63 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #091426;
-  --color-on-primary: #ffffff;
-  --color-primary-container: #1e293b;
-  --color-on-primary-container: #8590a6;
-  --color-primary-fixed: #d8e3fb;
-  --color-primary-fixed-dim: #bcc7de;
-  --color-on-primary-fixed: #111c2d;
-  --color-on-primary-fixed-variant: #3c475a;
-  --color-inverse-primary: #bcc7de;
+  /* Primary: Royal Blue */
+  --color-primary:                  #1D4ED8;
+  --color-on-primary:               #ffffff;
+  --color-primary-container:        #DBEAFE;
+  --color-on-primary-container:     #1E3A8A;
+  --color-primary-fixed:            #BFDBFE;
+  --color-primary-fixed-dim:        #93C5FD;
+  --color-on-primary-fixed:         #1E3A8A;
+  --color-on-primary-fixed-variant: #1D4ED8;
+  --color-inverse-primary:          #93C5FD;
 
-  --color-secondary: #00687a;
-  --color-on-secondary: #ffffff;
-  --color-secondary-container: #57dffe;
-  --color-on-secondary-container: #006172;
-  --color-secondary-fixed: #acedff;
-  --color-secondary-fixed-dim: #4cd7f6;
-  --color-on-secondary-fixed: #001f26;
-  --color-on-secondary-fixed-variant: #004e5c;
+  /* Secondary: Gold */
+  --color-secondary:                #F59E0B;
+  --color-on-secondary:             #ffffff;
+  --color-secondary-container:      #FBBF24;
+  --color-on-secondary-container:   #78350F;
+  --color-secondary-fixed:          #FDE68A;
+  --color-secondary-fixed-dim:      #F59E0B;
+  --color-on-secondary-fixed:       #1C1917;
+  --color-on-secondary-fixed-variant: #78350F;
 
-  --color-tertiary: #280c00;
-  --color-on-tertiary: #ffffff;
-  --color-tertiary-container: #481b00;
-  --color-on-tertiary-container: #eb6905;
-  --color-tertiary-fixed: #ffdbca;
-  --color-tertiary-fixed-dim: #ffb690;
-  --color-on-tertiary-fixed: #341100;
-  --color-on-tertiary-fixed-variant: #783200;
+  /* Tertiary: kept for instructor badge (amber-deep) */
+  --color-tertiary:                 #78350F;
+  --color-on-tertiary:              #ffffff;
+  --color-tertiary-container:       #92400E;
+  --color-on-tertiary-container:    #FBBF24;
+  --color-tertiary-fixed:           #FDE68A;
+  --color-tertiary-fixed-dim:       #FCD34D;
+  --color-on-tertiary-fixed:        #78350F;
+  --color-on-tertiary-fixed-variant: #92400E;
 
-  --color-error: #ba1a1a;
-  --color-on-error: #ffffff;
-  --color-error-container: #ffdad6;
-  --color-on-error-container: #93000a;
+  /* Error */
+  --color-error:                    #ba1a1a;
+  --color-on-error:                 #ffffff;
+  --color-error-container:          #ffdad6;
+  --color-on-error-container:       #93000a;
 
-  --color-surface: #f8f9ff;
-  --color-surface-dim: #cbdbf5;
-  --color-surface-bright: #f8f9ff;
+  /* Surface */
+  --color-surface:                  #ffffff;
+  --color-surface-dim:              #DBEAFE;
+  --color-surface-bright:           #ffffff;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #eff4ff;
-  --color-surface-container: #e5eeff;
-  --color-surface-container-high: #dce9ff;
-  --color-surface-container-highest: #d3e4fe;
-  --color-surface-variant: #d3e4fe;
-  --color-on-surface: #0b1c30;
-  --color-on-surface-variant: #45474c;
-  --color-on-background: #0b1c30;
-  --color-background: #f8f9ff;
-  --color-inverse-surface: #213145;
-  --color-inverse-on-surface: #eaf1ff;
+  --color-surface-container-low:    #EFF6FF;
+  --color-surface-container:        #DBEAFE;
+  --color-surface-container-high:   #BFDBFE;
+  --color-surface-container-highest:#93C5FD;
+  --color-surface-variant:          #DBEAFE;
+  --color-on-surface:               #1F2937;
+  --color-on-surface-variant:       #4B5563;
+  --color-on-background:            #1F2937;
+  --color-background:               #ffffff;
+  --color-inverse-surface:          #1E3A8A;
+  --color-inverse-on-surface:       #EFF6FF;
 
-  --color-outline: #75777d;
-  --color-outline-variant: #c5c6cd;
-  --color-surface-tint: #545f73;
+  --color-outline:                  #6B7280;
+  --color-outline-variant:          #D1D5DB;
+  --color-surface-tint:             #1D4ED8;
 
   --font-sans: 'Inter', sans-serif;
   --font-display: 'Space Grotesk', sans-serif;
@@ -74,8 +79,8 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: #f8f9ff;
-  color: #0b1c30;
+  background-color: #ffffff;
+  color: #1F2937;
   margin: 0;
   padding: 0;
 }

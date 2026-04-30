@@ -9,7 +9,7 @@ interface Props {
 const PRESET_COLORS = [
   '#3b82f6','#10b981','#f59e0b','#8b5cf6',
   '#ef4444','#ec4899','#14b8a6','#f97316',
-  '#00687a','#6366f1',
+  '#1D4ED8','#6366f1',
 ]
 
 const PRESET_ICONS = [
@@ -21,7 +21,7 @@ const PRESET_ICONS = [
 export default function CreateTeamModal({ onClose, onCreated }: Props) {
   const [name, setName]         = useState('')
   const [desc, setDesc]         = useState('')
-  const [color, setColor]       = useState('#00687a')
+  const [color, setColor]       = useState('#1D4ED8')
   const [icon, setIcon]         = useState('groups')
   const [saving, setSaving]     = useState(false)
   const [error, setError]       = useState('')
@@ -48,9 +48,9 @@ export default function CreateTeamModal({ onClose, onCreated }: Props) {
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden" onClick={e => e.stopPropagation()}>
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 bg-[#091426] text-white">
+        <div className="flex items-center justify-between px-6 py-4 bg-[#1E3A8A] text-white">
           <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-[#57dffe]">group_add</span>
+            <span className="material-symbols-outlined text-[#FBBF24]">group_add</span>
             <h2 className="font-display text-lg font-bold">Create New Team</h2>
           </div>
           <button onClick={onClose} className="text-white/60 hover:text-white transition-colors">
@@ -76,14 +76,14 @@ export default function CreateTeamModal({ onClose, onCreated }: Props) {
               Team Name <span className="text-[#ba1a1a]">*</span>
             </label>
             <input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Mechanical Design"
-              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20" />
+              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20" />
           </div>
 
           {/* Description */}
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Description</label>
             <input value={desc} onChange={e => setDesc(e.target.value)} placeholder="What does this team work on?"
-              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20" />
+              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20" />
           </div>
 
           {/* Color */}
@@ -106,8 +106,8 @@ export default function CreateTeamModal({ onClose, onCreated }: Props) {
             <div className="flex gap-2 flex-wrap">
               {PRESET_ICONS.map(ic => (
                 <button key={ic} type="button" onClick={() => setIcon(ic)}
-                  className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all border-2 ${icon === ic ? 'border-[#00687a] bg-[#e5eeff]' : 'border-slate-200 hover:border-slate-300 bg-slate-50'}`}>
-                  <span className={`material-symbols-outlined text-xl ${icon === ic ? 'text-[#00687a]' : 'text-slate-500'}`}>{ic}</span>
+                  className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all border-2 ${icon === ic ? 'border-[#1D4ED8] bg-[#EFF6FF]' : 'border-slate-200 hover:border-slate-300 bg-slate-50'}`}>
+                  <span className={`material-symbols-outlined text-xl ${icon === ic ? 'text-[#1D4ED8]' : 'text-slate-500'}`}>{ic}</span>
                 </button>
               ))}
             </div>
@@ -123,7 +123,7 @@ export default function CreateTeamModal({ onClose, onCreated }: Props) {
               Cancel
             </button>
             <button type="submit" disabled={saving}
-              className="flex-1 py-2.5 bg-[#00687a] hover:bg-[#005566] text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+              className="flex-1 py-2.5 bg-[#1D4ED8] hover:bg-[#1E3A8A] text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
               {saving ? <><span className="material-symbols-outlined animate-spin text-lg">refresh</span>Creating…</> : <><span className="material-symbols-outlined text-lg">group_add</span>Create Team</>}
             </button>
           </div>

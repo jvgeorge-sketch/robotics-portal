@@ -31,14 +31,14 @@ interface TaskSummary {
 
 const STATUS_GROUPS = [
   { key: 'todo',        label: 'To Do',      statuses: ['backlog', 'ready'],      color: 'text-slate-500',   bg: 'bg-slate-100',   badge: 'bg-slate-100 text-slate-500'  },
-  { key: 'inprogress',  label: 'In Progress', statuses: ['in_progress', 'review'], color: 'text-[#00687a]',   bg: 'bg-[#eff4ff]',   badge: 'bg-[#e5eeff] text-[#00687a]'  },
+  { key: 'inprogress',  label: 'In Progress', statuses: ['in_progress', 'review'], color: 'text-[#1D4ED8]',   bg: 'bg-[#EFF6FF]',   badge: 'bg-[#DBEAFE] text-[#1D4ED8]'  },
   { key: 'done',        label: 'Completed',   statuses: ['done'],                  color: 'text-emerald-600', bg: 'bg-emerald-50',  badge: 'bg-emerald-50 text-emerald-600'},
 ]
 
 const PRIORITY_CLS: Record<string, string> = {
   critical: 'bg-[#ffdad6] text-[#93000a]',
-  high:     'bg-[#ffdbca] text-[#341100]',
-  medium:   'bg-[#57dffe]/20 text-[#006172]',
+  high:     'bg-[#FDE68A] text-[#78350F]',
+  medium:   'bg-[#FBBF24]/20 text-[#1E40AF]',
   low:      'bg-slate-100 text-slate-600',
 }
 
@@ -133,7 +133,7 @@ export default function Teams() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <span className="material-symbols-outlined text-[#00687a] text-4xl animate-spin">refresh</span>
+        <span className="material-symbols-outlined text-[#1D4ED8] text-4xl animate-spin">refresh</span>
       </div>
     )
   }
@@ -152,12 +152,12 @@ export default function Teams() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="font-display text-3xl font-bold text-[#0b1c30]">Team Management</h1>
-          <p className="text-[#45474c]">Browse specialized units and their progress.</p>
+          <h1 className="font-display text-3xl font-bold text-[#1F2937]">Team Management</h1>
+          <p className="text-[#4B5563]">Browse specialized units and their progress.</p>
         </div>
         <button
           onClick={() => setShowCreateTeam(true)}
-          className="bg-[#091426] text-white px-5 py-2.5 rounded-lg font-bold flex items-center gap-2 hover:bg-[#1e293b] transition-all active:scale-95"
+          className="bg-[#1E3A8A] text-white px-5 py-2.5 rounded-lg font-bold flex items-center gap-2 hover:bg-[#1E3A8A] transition-all active:scale-95"
         >
           <span className="material-symbols-outlined text-xl">group_add</span>
           Create New Team
@@ -175,7 +175,7 @@ export default function Teams() {
         {/* Sidebar */}
         <div className="col-span-12 lg:col-span-3 space-y-4">
           <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-            <h3 className="text-[10px] font-bold uppercase tracking-wider text-[#45474c] mb-4 px-2">TEAMS</h3>
+            <h3 className="text-[10px] font-bold uppercase tracking-wider text-[#4B5563] mb-4 px-2">TEAMS</h3>
             <div className="space-y-2">
               {teams.map(team => (
                 <button
@@ -183,7 +183,7 @@ export default function Teams() {
                   onClick={() => setActive(team.id)}
                   className={`w-full flex items-center justify-between p-3 rounded-lg border transition-all ${
                     activeTeamId === team.id
-                      ? 'bg-[#e5eeff] border-[#57dffe]/30 font-bold'
+                      ? 'bg-[#DBEAFE] border-[#FBBF24]/30 font-bold'
                       : 'border-transparent text-slate-600 hover:bg-slate-50'
                   }`}
                 >
@@ -208,13 +208,13 @@ export default function Teams() {
           </div>
 
           {activeTeam && (
-            <div className="bg-[#091426] text-white rounded-xl p-5 relative overflow-hidden">
+            <div className="bg-[#1E3A8A] text-white rounded-xl p-5 relative overflow-hidden">
               <div className="relative z-10">
-                <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#8590a6] mb-2">COMPLETION</h4>
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#6B7280] mb-2">COMPLETION</h4>
                 <div className="font-display text-3xl font-bold">{pct}%</div>
-                <p className="text-xs text-[#8590a6] mt-1">{totalDone}/{totalTasks} tasks done</p>
+                <p className="text-xs text-[#6B7280] mt-1">{totalDone}/{totalTasks} tasks done</p>
                 <div className="mt-3 w-full h-1.5 bg-white/20 rounded-full overflow-hidden">
-                  <div className="h-full rounded-full bg-[#00687a]" style={{ width: `${pct}%` }} />
+                  <div className="h-full rounded-full bg-[#1D4ED8]" style={{ width: `${pct}%` }} />
                 </div>
               </div>
               <span className="material-symbols-outlined absolute -right-4 -bottom-4 opacity-10 rotate-12" style={{ fontSize: 80 }}>trending_up</span>
@@ -226,7 +226,7 @@ export default function Teams() {
         <div className="col-span-12 lg:col-span-9 space-y-5">
           {detailLoading ? (
             <div className="flex items-center justify-center h-64">
-              <span className="material-symbols-outlined text-[#00687a] text-4xl animate-spin">refresh</span>
+              <span className="material-symbols-outlined text-[#1D4ED8] text-4xl animate-spin">refresh</span>
             </div>
           ) : activeTeam ? (
             <>
@@ -236,17 +236,17 @@ export default function Teams() {
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                   <div className="flex items-center gap-5">
                     <div className="relative">
-                      <div className="w-20 h-20 rounded-xl bg-[#1e293b] border-4 border-[#e5eeff] flex items-center justify-center">
+                      <div className="w-20 h-20 rounded-xl bg-[#1E3A8A] border-4 border-[#DBEAFE] flex items-center justify-center">
                         <span className="material-symbols-outlined text-4xl" style={{ color: activeTeam.color }}>{activeTeam.icon}</span>
                       </div>
                     </div>
                     <div>
-                      <h2 className="font-display text-2xl font-bold text-[#0b1c30]">{activeTeam.name}</h2>
+                      <h2 className="font-display text-2xl font-bold text-[#1F2937]">{activeTeam.name}</h2>
                       {activeTeam.description && (
-                        <p className="text-[#45474c] text-sm mt-1">{activeTeam.description}</p>
+                        <p className="text-[#4B5563] text-sm mt-1">{activeTeam.description}</p>
                       )}
                       {teamLead && (
-                        <p className="text-[#45474c] flex items-center gap-2 mt-2">
+                        <p className="text-[#4B5563] flex items-center gap-2 mt-2">
                           <span className="font-bold" style={{ color: activeTeam.color }}>Lead:</span>
                           {teamLead.full_name}
                         </p>
@@ -284,7 +284,7 @@ export default function Teams() {
                       <div className="space-y-2">
                         {g.tasks.slice(0, 5).map(t => (
                           <div key={t.id} className={`p-2.5 rounded-lg border text-sm ${g.bg} border-transparent`}>
-                            <div className={`font-semibold mb-1.5 text-[#091426] ${g.key === 'done' ? 'line-through opacity-60' : ''}`}>
+                            <div className={`font-semibold mb-1.5 text-[#1E3A8A] ${g.key === 'done' ? 'line-through opacity-60' : ''}`}>
                               {t.title}
                             </div>
                             <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold uppercase ${PRIORITY_CLS[t.priority] || 'bg-slate-100 text-slate-600'}`}>
@@ -326,11 +326,11 @@ export default function Teams() {
                         <tr key={m.user_id} className="hover:bg-slate-50 transition-colors">
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-[#1e293b] flex items-center justify-center text-white text-xs font-bold font-display">
+                              <div className="w-8 h-8 rounded-full bg-[#1E3A8A] flex items-center justify-center text-white text-xs font-bold font-display">
                                 {initials(m.full_name)}
                               </div>
                               <div>
-                                <div className="font-bold text-sm text-[#091426] flex items-center gap-2">
+                                <div className="font-bold text-sm text-[#1E3A8A] flex items-center gap-2">
                                   {m.full_name}
                                   {m.is_lead && (
                                     <span className="text-[9px] font-black px-1.5 py-0.5 rounded uppercase text-white" style={{ backgroundColor: activeTeam.color }}>
@@ -345,7 +345,7 @@ export default function Teams() {
                           <td className="px-6 py-4 text-xs font-medium text-slate-600 capitalize">{m.role.replace('_', ' ')}</td>
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-1">
-                              <span className={`w-1.5 h-1.5 rounded-full ${m.active_tasks > 0 ? 'bg-[#00687a]' : 'bg-slate-300'}`} />
+                              <span className={`w-1.5 h-1.5 rounded-full ${m.active_tasks > 0 ? 'bg-[#1D4ED8]' : 'bg-slate-300'}`} />
                               <span className="text-xs font-display">{m.active_tasks} active</span>
                             </div>
                           </td>

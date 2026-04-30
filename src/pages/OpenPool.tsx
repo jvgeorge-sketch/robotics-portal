@@ -136,7 +136,7 @@ export default function OpenPool() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <span className="material-symbols-outlined text-[#00687a] text-4xl animate-spin">refresh</span>
+        <span className="material-symbols-outlined text-[#1D4ED8] text-4xl animate-spin">refresh</span>
       </div>
     )
   }
@@ -161,14 +161,14 @@ export default function OpenPool() {
                   key={f}
                   onClick={() => setActiveFilter(f)}
                   className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
-                    activeFilter === f ? 'bg-[#00687a] text-white' : 'text-slate-600 hover:bg-slate-50'
+                    activeFilter === f ? 'bg-[#1D4ED8] text-white' : 'text-slate-600 hover:bg-slate-50'
                   }`}
                 >
                   {f}
                 </button>
               ))}
             </div>
-            <div className="flex items-center text-[#00687a] font-display text-sm font-medium">
+            <div className="flex items-center text-[#1D4ED8] font-display text-sm font-medium">
               <span className="material-symbols-outlined text-lg mr-1">bolt</span>
               {filtered.length} Pool Tasks Active
             </div>
@@ -192,17 +192,17 @@ export default function OpenPool() {
                   <div
                     key={task.id}
                     onClick={() => setDetailTaskId(task.id)}
-                    className={`bg-white border-t-4 border-x border-b border-slate-200 rounded-xl p-6 shadow-sm flex flex-col justify-between hover:shadow-md hover:border-[#00687a] transition-all cursor-pointer ${
+                    className={`bg-white border-t-4 border-x border-b border-slate-200 rounded-xl p-6 shadow-sm flex flex-col justify-between hover:shadow-md hover:border-[#1D4ED8] transition-all cursor-pointer ${
                       task.priority === 'critical' ? 'border-t-[#ba1a1a]'
-                      : task.priority === 'high'   ? 'border-t-[#eb6905]'
-                      : 'border-t-[#00687a]'
+                      : task.priority === 'high'   ? 'border-t-[#F59E0B]'
+                      : 'border-t-[#1D4ED8]'
                     } ${wasClaimed ? 'opacity-75 scale-[0.99]' : ''}`}
                   >
                     <div>
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex gap-2 flex-wrap">
                           {task.tags.slice(0, 2).map(tag => (
-                            <span key={tag} className="bg-[#57dffe]/10 text-[#00687a] text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
+                            <span key={tag} className="bg-[#FBBF24]/10 text-[#1D4ED8] text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
                               {tag}
                             </span>
                           ))}
@@ -240,7 +240,7 @@ export default function OpenPool() {
                         <button
                           onClick={e => { e.stopPropagation(); claimTask(task.id) }}
                           disabled={!!isClaiming}
-                          className="w-full py-2.5 bg-[#00687a] text-white rounded-lg font-bold hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+                          className="w-full py-2.5 bg-[#1D4ED8] text-white rounded-lg font-bold hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60"
                         >
                           {isClaiming
                             ? <><span className="material-symbols-outlined text-lg animate-spin">refresh</span> Claiming…</>
@@ -259,25 +259,25 @@ export default function OpenPool() {
         {/* Sidebar */}
         <aside className="w-full lg:w-80 space-y-5">
           {/* Pool Rules */}
-          <div className="bg-[#091426] p-6 rounded-xl text-white shadow-xl relative overflow-hidden">
+          <div className="bg-[#1E3A8A] p-6 rounded-xl text-white shadow-xl relative overflow-hidden">
             <div className="absolute -right-4 -top-4 opacity-10">
               <span className="material-symbols-outlined" style={{ fontSize: 80 }}>timer</span>
             </div>
             <h4 className="font-display text-lg font-semibold mb-4 flex items-center gap-2 relative z-10">
-              <span className="material-symbols-outlined text-[#57dffe] text-xl">info</span>
+              <span className="material-symbols-outlined text-[#FBBF24] text-xl">info</span>
               Pool Rules
             </h4>
             <div className="space-y-3 relative z-10">
               <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700">
-                <p className="text-[10px] font-bold text-[#acedff] uppercase tracking-widest mb-1">Claim to Own</p>
+                <p className="text-[10px] font-bold text-[#FDE68A] uppercase tracking-widest mb-1">Claim to Own</p>
                 <p className="text-sm text-slate-300">Claiming a task moves it to your Workspace as In Progress immediately.</p>
               </div>
               <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700">
-                <p className="text-[10px] font-bold text-[#acedff] uppercase tracking-widest mb-1">XP on Completion</p>
+                <p className="text-[10px] font-bold text-[#FDE68A] uppercase tracking-widest mb-1">XP on Completion</p>
                 <p className="text-sm text-slate-300">Points are awarded to your profile when a PM marks the task done.</p>
               </div>
               <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700">
-                <p className="text-[10px] font-bold text-[#acedff] uppercase tracking-widest mb-1">Open to Everyone</p>
+                <p className="text-[10px] font-bold text-[#FDE68A] uppercase tracking-widest mb-1">Open to Everyone</p>
                 <p className="text-sm text-slate-300">Any team member can claim Open Pool tasks — no team assignment required.</p>
               </div>
             </div>
@@ -295,7 +295,7 @@ export default function OpenPool() {
               <div className="space-y-3">
                 {claimEvents.map((c, i) => (
                   <div key={i} className="flex items-start text-xs gap-2">
-                    <div className="w-6 h-6 rounded-full bg-[#e5eeff] flex items-center justify-center text-[10px] font-bold text-[#091426] flex-shrink-0 mt-0.5">
+                    <div className="w-6 h-6 rounded-full bg-[#EFF6FF] flex items-center justify-center text-[10px] font-bold text-[#1E3A8A] flex-shrink-0 mt-0.5">
                       {c.initials}
                     </div>
                     <span className="text-slate-600">
@@ -313,19 +313,19 @@ export default function OpenPool() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-[10px] text-slate-400 uppercase font-bold mb-1">Tasks Done</p>
-                <p className="font-display text-2xl font-bold text-[#091426]">{myDoneToday}</p>
+                <p className="font-display text-2xl font-bold text-[#1E3A8A]">{myDoneToday}</p>
               </div>
               <div>
                 <p className="text-[10px] text-slate-400 uppercase font-bold mb-1">XP Earned</p>
-                <p className="font-display text-2xl font-bold text-[#00687a]">{myXpToday}</p>
+                <p className="font-display text-2xl font-bold text-[#1D4ED8]">{myXpToday}</p>
               </div>
               <div>
                 <p className="text-[10px] text-slate-400 uppercase font-bold mb-1">Claimed Now</p>
-                <p className="font-display text-2xl font-bold text-[#091426]">{justClaimed.length}</p>
+                <p className="font-display text-2xl font-bold text-[#1E3A8A]">{justClaimed.length}</p>
               </div>
               <div>
                 <p className="text-[10px] text-slate-400 uppercase font-bold mb-1">Pool Size</p>
-                <p className="font-display text-2xl font-bold text-[#eb6905]">{tasks.length}</p>
+                <p className="font-display text-2xl font-bold text-[#F59E0B]">{tasks.length}</p>
               </div>
             </div>
           </div>

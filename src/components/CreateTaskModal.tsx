@@ -75,9 +75,9 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 bg-[#091426] text-white">
+        <div className="flex items-center justify-between px-6 py-4 bg-[#1E3A8A] text-white">
           <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-[#57dffe]">add_task</span>
+            <span className="material-symbols-outlined text-[#FBBF24]">add_task</span>
             <h2 className="font-display text-lg font-bold">Create New Task</h2>
           </div>
           <button onClick={onClose} className="text-white/60 hover:text-white transition-colors">
@@ -95,7 +95,7 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
               value={title}
               onChange={e => setTitle(e.target.value)}
               placeholder="e.g. Calibrate encoder offsets"
-              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20"
+              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
             />
           </div>
 
@@ -107,7 +107,7 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
               onChange={e => setDesc(e.target.value)}
               placeholder="Optional details about this task..."
               rows={3}
-              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20 resize-none"
+              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20 resize-none"
             />
           </div>
 
@@ -121,8 +121,8 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition-all border ${
                       priority === p
                         ? p === 'critical' ? 'bg-[#ba1a1a] text-white border-[#ba1a1a]'
-                          : p === 'high'   ? 'bg-[#eb6905] text-white border-[#eb6905]'
-                          : p === 'medium' ? 'bg-[#00687a] text-white border-[#00687a]'
+                          : p === 'high'   ? 'bg-[#F59E0B] text-white border-[#F59E0B]'
+                          : p === 'medium' ? 'bg-[#1D4ED8] text-white border-[#1D4ED8]'
                           : 'bg-slate-500 text-white border-slate-500'
                         : 'bg-white text-slate-500 border-slate-200 hover:border-slate-400'
                     }`}>{p}</button>
@@ -135,7 +135,7 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
                 {STATUSES.map(s => (
                   <button key={s} type="button" onClick={() => setStatus(s)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition-all border ${
-                      status === s ? 'bg-[#091426] text-white border-[#091426]' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-400'
+                      status === s ? 'bg-[#1E3A8A] text-white border-[#1E3A8A]' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-400'
                     }`}>{s.replace('_', ' ')}</button>
                 ))}
               </div>
@@ -146,7 +146,7 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Assign to Team</label>
             <select value={teamId} onChange={e => setTeamId(e.target.value)}
-              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20 bg-white">
+              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20 bg-white">
               <option value="">Open Pool (any team)</option>
               {teams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
@@ -157,13 +157,13 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Points Value</label>
               <input type="number" min={1} max={1000} value={points} onChange={e => setPoints(Number(e.target.value))}
-                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20" />
+                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20" />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Est. Minutes</label>
               <input type="number" min={1} placeholder="e.g. 120" value={estMins}
                 onChange={e => setEstMins(e.target.value === '' ? '' : Number(e.target.value))}
-                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20" />
+                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20" />
             </div>
           </div>
 
@@ -172,7 +172,7 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Tags</label>
             <div className="flex flex-wrap gap-2 mb-2">
               {tags.map(tag => (
-                <span key={tag} className="flex items-center gap-1 bg-[#e5eeff] text-[#006172] text-xs font-bold px-2 py-1 rounded-lg">
+                <span key={tag} className="flex items-center gap-1 bg-[#EFF6FF] text-[#1E40AF] text-xs font-bold px-2 py-1 rounded-lg">
                   {tag}
                   <button type="button" onClick={() => setTags(t => t.filter(x => x !== tag))} className="hover:text-[#ba1a1a]">
                     <span className="material-symbols-outlined" style={{ fontSize: 14 }}>close</span>
@@ -182,7 +182,7 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
             </div>
             <input value={tagInput} onChange={e => setTagInput(e.target.value)} onKeyDown={addTag}
               placeholder="Type a tag and press Enter"
-              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#00687a] focus:ring-2 focus:ring-[#00687a]/20" />
+              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20" />
           </div>
 
           {error && (
@@ -195,7 +195,7 @@ export default function CreateTaskModal({ onClose, onCreated, defaultStatus }: P
               Cancel
             </button>
             <button type="submit" disabled={saving}
-              className="flex-1 py-2.5 bg-[#00687a] hover:bg-[#005566] text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+              className="flex-1 py-2.5 bg-[#1D4ED8] hover:bg-[#1E3A8A] text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
               {saving
                 ? <><span className="material-symbols-outlined text-lg animate-spin">refresh</span>Saving…</>
                 : <><span className="material-symbols-outlined text-lg">add_task</span>Create Task</>

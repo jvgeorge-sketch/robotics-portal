@@ -90,8 +90,8 @@ export default function Dashboard() {
         sub: `${(task.assigned_to as any)?.full_name || 'A member'} completed this task`,
         time: timeSince(task.completed_at!),
         icon: 'verified',
-        iconBg: 'bg-[#57dffe]',
-        iconColor: 'text-[#006172]',
+        iconBg: 'bg-[#FBBF24]',
+        iconColor: 'text-[#1E40AF]',
       })))
 
       setLoading(false)
@@ -117,7 +117,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <span className="material-symbols-outlined text-[#00687a] text-4xl animate-spin">refresh</span>
+        <span className="material-symbols-outlined text-[#1D4ED8] text-4xl animate-spin">refresh</span>
       </div>
     )
   }
@@ -125,13 +125,13 @@ export default function Dashboard() {
   return (
     <div className="p-8 max-w-[1280px] mx-auto">
       {/* Daily Winner Banner */}
-      <div className="mb-8 bg-gradient-to-r from-[#091426] to-[#00687a] text-white p-5 rounded-xl flex items-center justify-between shadow-lg relative overflow-hidden">
+      <div className="mb-8 bg-gradient-to-r from-[#1E3A8A] to-[#1D4ED8] text-white p-5 rounded-xl flex items-center justify-between shadow-lg relative overflow-hidden">
         <div className="flex items-center gap-4 relative z-10">
           <div className="bg-white/10 p-3 rounded-full border border-white/20">
-            <span className="material-symbols-filled text-[#57dffe] text-3xl">workspace_premium</span>
+            <span className="material-symbols-filled text-[#FBBF24] text-3xl">workspace_premium</span>
           </div>
           <div>
-            <p className="text-[#57dffe] text-[10px] uppercase tracking-widest font-bold mb-1">Top Performer</p>
+            <p className="text-[#FBBF24] text-[10px] uppercase tracking-widest font-bold mb-1">Top Performer</p>
             {topProfile
               ? <h2 className="font-display text-xl font-bold">{topProfile.full_name} — {topProfile.season_points} pts</h2>
               : <h2 className="font-display text-xl font-bold">No points logged yet — get building!</h2>
@@ -141,7 +141,7 @@ export default function Dashboard() {
         <div className="relative z-10 flex gap-6 pr-4">
           <div className="text-center">
             <p className="text-[10px] uppercase opacity-60 font-bold">Tasks Done</p>
-            <p className="font-display text-lg font-bold text-[#57dffe]">{doneTasks}</p>
+            <p className="font-display text-lg font-bold text-[#FBBF24]">{doneTasks}</p>
           </div>
           <div className="w-px bg-white/20 h-10" />
           <div className="text-center">
@@ -168,7 +168,7 @@ export default function Dashboard() {
                 <h3 className="font-display text-xl font-semibold text-slate-900">Season Progress</h3>
                 <p className="text-sm text-slate-500">2024 Championships Journey</p>
               </div>
-              <span className="bg-[#e5eeff] text-[#00687a] text-xs font-bold px-2 py-1 rounded">PHASE 2</span>
+              <span className="bg-[#EFF6FF] text-[#1D4ED8] text-xs font-bold px-2 py-1 rounded">PHASE 2</span>
             </div>
             <div className="relative flex items-center justify-center mb-6">
               <div className="w-40 h-40 rounded-full border-[12px] border-slate-100 flex items-center justify-center">
@@ -179,7 +179,7 @@ export default function Dashboard() {
               </div>
               <div
                 className="absolute w-40 h-40 rounded-full border-[12px] border-transparent -rotate-45 pointer-events-none"
-                style={{ borderTopColor: '#00687a', borderRightColor: seasonPct > 50 ? '#00687a' : 'transparent' }}
+                style={{ borderTopColor: '#1D4ED8', borderRightColor: seasonPct > 50 ? '#1D4ED8' : 'transparent' }}
               />
             </div>
             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-100">
@@ -205,16 +205,16 @@ export default function Dashboard() {
             ) : (
               <div>
                 {topProfiles.map((p, i) => (
-                  <div key={p.id} className={`flex items-center gap-4 px-6 py-4 ${i === 0 ? 'bg-[#e5eeff]/30' : ''} ${i < topProfiles.length - 1 ? 'border-b border-slate-50' : ''}`}>
-                    <span className={`font-display font-black w-4 ${i === 0 ? 'text-[#00687a]' : 'text-slate-400'}`}>{i + 1}</span>
-                    <div className="w-8 h-8 rounded-full bg-[#1e293b] flex items-center justify-center">
+                  <div key={p.id} className={`flex items-center gap-4 px-6 py-4 ${i === 0 ? 'bg-[#EFF6FF]/30' : ''} ${i < topProfiles.length - 1 ? 'border-b border-slate-50' : ''}`}>
+                    <span className={`font-display font-black w-4 ${i === 0 ? 'text-[#1D4ED8]' : 'text-slate-400'}`}>{i + 1}</span>
+                    <div className="w-8 h-8 rounded-full bg-[#1E3A8A] flex items-center justify-center">
                       <span className="text-white text-xs font-bold font-display">{initials(p.full_name)}</span>
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-bold text-slate-900">{p.full_name}</p>
                       <p className="text-[10px] text-slate-500 font-medium">{p.pts_label}</p>
                     </div>
-                    <span className={`font-display font-bold ${i === 0 ? 'text-[#00687a]' : 'text-slate-700'}`}>+{p.season_points}</span>
+                    <span className={`font-display font-bold ${i === 0 ? 'text-[#1D4ED8]' : 'text-slate-700'}`}>+{p.season_points}</span>
                   </div>
                 ))}
               </div>
@@ -263,7 +263,7 @@ export default function Dashboard() {
                       <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{t.name}</span>
                       <span className="font-display text-sm font-medium" style={{ color: t.color }}>{t.pct}%</span>
                     </div>
-                    <div className="h-3 bg-[#e5eeff] rounded-full overflow-hidden">
+                    <div className="h-3 bg-[#EFF6FF] rounded-full overflow-hidden">
                       <div className="h-full rounded-full transition-all duration-700" style={{ width: `${t.pct}%`, backgroundColor: t.color }} />
                     </div>
                     <div className="text-[10px] text-slate-500">
@@ -336,7 +336,7 @@ export default function Dashboard() {
               {feed.map((f, i) => (
                 <div key={f.id} className="flex gap-4 relative">
                   {i < feed.length - 1 && (
-                    <div className="absolute left-[11px] top-7 bottom-[-24px] w-0.5 bg-[#e5eeff]" />
+                    <div className="absolute left-[11px] top-7 bottom-[-24px] w-0.5 bg-[#EFF6FF]" />
                   )}
                   <div className={`w-6 h-6 rounded-full ${f.iconBg} flex items-center justify-center flex-shrink-0 z-10`}>
                     <span className={`material-symbols-outlined text-sm ${f.iconColor}`} style={{ fontSize: 14 }}>{f.icon}</span>
@@ -351,7 +351,7 @@ export default function Dashboard() {
             </div>
           )}
           <div className="p-4">
-            <button className="w-full py-2 text-xs font-bold text-[#00687a] hover:bg-[#e5eeff] rounded-lg transition-colors border border-dashed border-[#c5c6cd]">
+            <button className="w-full py-2 text-xs font-bold text-[#1D4ED8] hover:bg-[#EFF6FF] rounded-lg transition-colors border border-dashed border-[#D1D5DB]">
               VIEW ALL ACTIVITY
             </button>
           </div>
