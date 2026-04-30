@@ -2,6 +2,7 @@ import { useState, useEffect, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import RequestAccessModal from '../components/RequestAccessModal'
+import ForgotPasswordModal from '../components/ForgotPasswordModal'
 
 const C = {
   paper:      '#ffffff',
@@ -38,6 +39,7 @@ export default function Login() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showRequestAccess, setShowRequestAccess] = useState(false)
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -392,12 +394,17 @@ export default function Login() {
                 />
                 <span>Remember me</span>
               </label>
-              <a href="#" style={{
-                color: C.blueDeep, textDecoration: 'none',
-                fontStyle: 'italic',
-                fontFamily: "'Cormorant Garamond', serif", fontSize: 16,
-                borderBottom: `1px solid ${C.blueDeep}`, paddingBottom: 1,
-              }}>Forgot password</a>
+              <button
+                type="button"
+                onClick={() => setShowForgotPassword(true)}
+                style={{
+                  background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                  color: C.blueDeep,
+                  fontStyle: 'italic',
+                  fontFamily: "'Cormorant Garamond', serif", fontSize: 16,
+                  borderBottom: `1px solid ${C.blueDeep}`, paddingBottom: 1,
+                }}
+              >Forgot password</button>
             </div>
 
             {/* Error */}
@@ -489,6 +496,9 @@ export default function Login() {
 
       {showRequestAccess && (
         <RequestAccessModal onClose={() => setShowRequestAccess(false)} />
+      )}
+      {showForgotPassword && (
+        <ForgotPasswordModal onClose={() => setShowForgotPassword(false)} />
       )}
     </div>
   )

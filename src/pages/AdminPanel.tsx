@@ -397,6 +397,7 @@ export default function AdminPanel() {
   const [accessRequests, setAccessRequests] = useState<AccessRequest[]>([])
   const [approveTarget, setApproveTarget] = useState<AccessRequest | null>(null)
   const [denyingId, setDenyingId] = useState<string | null>(null)
+  const [resettingDefaultId, setResettingDefaultId] = useState<string | null>(null)
 
   const load = useCallback(async () => {
     const [{ data: profiles }, { data: allTeams }, { data: members }, { data: requests }] = await Promise.all([
@@ -526,6 +527,18 @@ export default function AdminPanel() {
     URL.revokeObjectURL(url)
   }
 
+  async function resetToDefault(userId: string) {
+    setResettingDefaultId(userId)
+    const hash = await hashPassword('Monday99')
+    await supabase.from('profiles').update({
+      password_hash: hash,
+      must_change_password: true,
+      reset_requested: false,
+    }).eq('id', userId)
+    await load()
+    setResettingDefaultId(null)
+  }
+
   async function denyRequest(id: string) {
     setDenyingId(id)
     await supabase.from('access_requests').update({ status: 'denied', reviewed_at: new Date().toISOString(), reviewed_by: currentUser?.id ?? null }).eq('id', id)
@@ -617,6 +630,46 @@ export default function AdminPanel() {
           <button onClick={() => setDeleteError(null)} className="ml-auto text-[#93000a]/60 hover:text-[#93000a]">
             <span className="material-symbols-outlined text-base">close</span>
           </button>
+        </div>
+      )}
+
+      {/* Password Reset Requests */}
+      {users.filter(u => u.reset_requested).length > 0 && (
+        <div className="bg-white border border-[#BFDBFE]/60 rounded-xl overflow-hidden shadow-sm mb-6">
+          <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-blue-50">
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-[#1D4ED8]">lock_reset</span>
+              <h3 className="font-display text-lg font-semibold text-slate-900">Password Reset Requests</h3>
+            </div>
+            <span className="bg-[#1D4ED8] text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">
+              {users.filter(u => u.reset_requested).length} pending
+            </span>
+          </div>
+          <div className="divide-y divide-slate-100">
+            {users.filter(u => u.reset_requested).map(u => (
+              <div key={u.id} className="px-6 py-4 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-[#1E3A8A] flex items-center justify-center flex-shrink-0">
+                    <span className="text-white text-xs font-bold font-display">{initials(u.full_name)}</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm text-[#1F2937]">{u.full_name}</p>
+                    <p className="text-xs text-[#4B5563] font-mono">@{u.username}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => resetToDefault(u.id)}
+                  disabled={resettingDefaultId === u.id}
+                  className="px-4 py-1.5 bg-[#1D4ED8] hover:bg-[#1E3A8A] text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                >
+                  {resettingDefaultId === u.id
+                    ? <><span className="material-symbols-outlined text-sm animate-spin">refresh</span>Resetting…</>
+                    : <><span className="material-symbols-outlined text-sm">lock_reset</span>Reset to Default</>
+                  }
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

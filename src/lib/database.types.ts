@@ -70,6 +70,7 @@ export interface Profile {
   daily_streak: number
   is_active: boolean
   must_change_password: boolean
+  reset_requested: boolean
   created_at: string
 }
 
