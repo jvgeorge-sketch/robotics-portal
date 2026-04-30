@@ -325,23 +325,16 @@ function ResetPasswordModal({
   onClose: () => void
   onDone: () => void
 }) {
-  const [newPassword, setNewPassword] = useState('')
-  const [confirm, setConfirm] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setError('')
-    if (newPassword.length < 6) { setError('Password must be at least 6 characters.'); return }
-    if (newPassword !== confirm) { setError('Passwords do not match.'); return }
-
+  async function handleReset() {
     setSaving(true)
-    const hash = await hashPassword(newPassword)
+    setError('')
+    const hash = await hashPassword('Monday99')
     const { error: dbErr } = await supabase
       .from('profiles')
-      .update({ password_hash: hash })
+      .update({ password_hash: hash, must_change_password: true })
       .eq('id', target.id)
     setSaving(false)
     if (dbErr) { setError(dbErr.message); return }
@@ -358,7 +351,7 @@ function ResetPasswordModal({
             <span className="material-symbols-outlined text-[#FBBF24]">lock_reset</span>
             <div>
               <h2 className="font-display text-base font-bold">Reset Password</h2>
-              <p className="text-[#6B7280] text-xs">@{target.username}</p>
+              <p className="text-[#93C5FD] text-xs">@{target.username}</p>
             </div>
           </div>
           <button onClick={onClose} className="text-white/60 hover:text-white transition-colors">
@@ -366,35 +359,14 @@ function ResetPasswordModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">New Password</label>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={newPassword}
-                onChange={e => setNewPassword(e.target.value)}
-                placeholder="Min. 6 characters"
-                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 pr-10 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
-              />
-              <button type="button" onClick={() => setShowPassword(v => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
-                  {showPassword ? 'visibility_off' : 'visibility'}
-                </span>
-              </button>
-            </div>
-          </div>
-          <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Confirm Password</label>
-            <input
-              type={showPassword ? 'text' : 'password'}
-              value={confirm}
-              onChange={e => setConfirm(e.target.value)}
-              placeholder="Re-enter password"
-              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
-            />
-          </div>
+        <div className="p-6 space-y-4">
+          <p className="text-sm text-slate-600 leading-relaxed">
+            This will reset <strong className="text-slate-900">{target.full_name}</strong>'s password to the default{' '}
+            <code className="bg-slate-100 px-1.5 py-0.5 rounded text-[#1E3A8A] font-mono">Monday99</code>.
+          </p>
+          <p className="text-sm text-slate-600">
+            They will be prompted to set a new password the next time they log in.
+          </p>
           {error && (
             <div className="bg-[#ffdad6] text-[#93000a] text-sm font-medium px-4 py-2.5 rounded-xl">{error}</div>
           )}
@@ -403,15 +375,15 @@ function ResetPasswordModal({
               className="flex-1 py-2.5 border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">
               Cancel
             </button>
-            <button type="submit" disabled={saving}
+            <button onClick={handleReset} disabled={saving}
               className="flex-1 py-2.5 bg-[#1D4ED8] hover:bg-[#1E3A8A] text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
               {saving
-                ? <span className="material-symbols-outlined text-lg animate-spin">refresh</span>
-                : 'Reset Password'
+                ? <><span className="material-symbols-outlined text-lg animate-spin">refresh</span>Resetting…</>
+                : <><span className="material-symbols-outlined text-lg">lock_reset</span>Reset to Default</>
               }
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   )
