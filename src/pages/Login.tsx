@@ -133,22 +133,16 @@ export default function Login() {
             textAlign: 'center',
             padding: m ? '20px 0 16px' : '24px 0',
           }}>
-            <div style={{
-              width: m ? 120 : 200, height: m ? 120 : 200,
-              marginBottom: m ? 20 : 36,
-              borderRadius: '50%',
-              background: '#ffffff',
-              border: '2px solid rgba(251,191,36,0.5)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              overflow: 'hidden',
-              boxShadow: '0 0 0 6px rgba(251,191,36,0.10)',
-            }}>
-              <img
-                src="/eagle-logo.png"
-                alt="Carl Sandburg High School Eagles"
-                style={{ width: '88%', height: '88%', objectFit: 'contain' }}
-              />
-            </div>
+            <img
+              src="/eagle-logo.png"
+              alt="Carl Sandburg High School Eagles"
+              style={{
+                width: m ? 120 : 200, height: m ? 120 : 200,
+                objectFit: 'contain',
+                marginBottom: m ? 20 : 36,
+              }}
+              onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+            />
 
             <div style={{
               fontFamily: "'Cormorant Garamond', serif",
