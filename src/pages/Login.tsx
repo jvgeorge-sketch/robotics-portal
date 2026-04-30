@@ -1,26 +1,35 @@
-import { useState, type FormEvent } from 'react'
+import { useState, useEffect, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import RequestAccessModal from '../components/RequestAccessModal'
 
 const C = {
-  paper:       'oklch(0.975 0.013 85)',
-  paper2:      'oklch(0.955 0.015 80)',
-  ink:         '#1F2937',
-  inkSoft:     '#4B5563',
-  inkFaint:    '#9CA3AF',
-  rule:        '#E5E7EB',
-  ruleStrong:  '#D1D5DB',
-  blue:        '#1D4ED8',
-  blueDeep:    '#1E3A8A',
-  blueDarker:  '#172554',
-  gold:        '#FBBF24',
-  goldDeep:    '#F59E0B',
+  paper:      'oklch(0.975 0.013 85)',
+  ink:        '#1F2937',
+  inkSoft:    '#4B5563',
+  inkFaint:   '#9CA3AF',
+  ruleStrong: '#D1D5DB',
+  blue:       '#1D4ED8',
+  blueDeep:   '#1E3A8A',
+  blueDarker: '#172554',
+  gold:       '#FBBF24',
+  goldDeep:   '#F59E0B',
+}
+
+function useMobile() {
+  const [mobile, setMobile] = useState(() => window.innerWidth <= 768)
+  useEffect(() => {
+    const handler = () => setMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', handler)
+    return () => window.removeEventListener('resize', handler)
+  }, [])
+  return mobile
 }
 
 export default function Login() {
   const { signIn } = useAuth()
   const navigate = useNavigate()
+  const m = useMobile()
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -56,13 +65,12 @@ export default function Login() {
       color: C.ink,
       WebkitFontSmoothing: 'antialiased',
     }}>
-      {/* Gradient overlays */}
+      {/* Gradient + dot overlays */}
       <div style={{
         position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0,
         background: `radial-gradient(ellipse at 20% 0%, oklch(0.97 0.025 75 / 0.7), transparent 60%),
                      radial-gradient(ellipse at 100% 100%, oklch(0.92 0.03 60 / 0.5), transparent 55%)`,
       }} />
-      {/* Dot pattern */}
       <div style={{
         position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0,
         backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(31,41,55,0.04) 1px, transparent 1.5px)',
@@ -70,62 +78,64 @@ export default function Login() {
         mixBlendMode: 'multiply',
       }} />
 
-      {/* Two-column layout */}
+      {/* Layout grid — two columns on desktop, single column on mobile */}
       <div style={{
         position: 'relative', zIndex: 1,
         minHeight: '100vh',
         display: 'grid',
-        gridTemplateColumns: '1.05fr 1fr',
+        gridTemplateColumns: m ? '1fr' : '1.05fr 1fr',
       }}>
 
-        {/* ===== LEFT: Brand / Crest ===== */}
+        {/* ===== LEFT: Brand ===== */}
         <aside style={{
           position: 'relative',
-          padding: '56px 64px',
+          padding: m ? '32px 24px' : '56px 64px',
           display: 'flex', flexDirection: 'column',
           background: `linear-gradient(180deg, ${C.blue} 0%, ${C.blueDarker} 100%)`,
           color: 'oklch(0.96 0.008 260)',
           overflow: 'hidden',
+          minHeight: m ? 'auto' : '100vh',
         }}>
-          {/* Double border (replaces ::before / ::after pseudo-elements) */}
+          {/* Decorative double border */}
           <div style={{
-            position: 'absolute', inset: 24,
+            position: 'absolute', inset: m ? 12 : 24,
             border: '1px solid rgba(251,191,36,0.40)',
             pointerEvents: 'none',
           }} />
           <div style={{
-            position: 'absolute', inset: 30,
+            position: 'absolute', inset: m ? 18 : 30,
             border: '1px solid rgba(251,191,36,0.18)',
             pointerEvents: 'none',
           }} />
 
           {/* Header row */}
           <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24,
+            display: 'flex', alignItems: 'center',
+            justifyContent: 'space-between', gap: 16,
             color: 'rgba(248,250,252,0.85)',
-            fontSize: 11.5, letterSpacing: '0.22em', textTransform: 'uppercase',
+            fontSize: m ? 10 : 11.5,
+            letterSpacing: '0.22em', textTransform: 'uppercase',
             whiteSpace: 'nowrap',
           }}>
             <span>Eagle Army · Robotics</span>
-            {/* Eagle Army logo — drop eagle-army-logo.png into robotics-portal/public/ */}
             <img
               src="/eagle-army-logo.png"
               alt="Eagle Army"
-              style={{ height: 48, width: 'auto', objectFit: 'contain', borderRadius: 6, display: 'block' }}
+              style={{ height: m ? 36 : 48, width: 'auto', objectFit: 'contain', borderRadius: 6, display: 'block' }}
               onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
             />
           </div>
 
           {/* Crest + school info */}
           <div style={{
-            flex: 1,
+            flex: m ? 'none' : 1,
             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
             textAlign: 'center',
-            padding: '24px 0',
+            padding: m ? '20px 0 16px' : '24px 0',
           }}>
-            {/* Real Sandburg Eagle logo — drop a transparent-background PNG into robotics-portal/public/eagle-logo.png */}
             <div style={{
-              width: 200, height: 200, marginBottom: 36,
+              width: m ? 120 : 200, height: m ? 120 : 200,
+              marginBottom: m ? 20 : 36,
               borderRadius: '50%',
               background: '#ffffff',
               border: '2px solid rgba(251,191,36,0.5)',
@@ -142,77 +152,88 @@ export default function Login() {
 
             <div style={{
               fontFamily: "'Cormorant Garamond', serif",
-              fontWeight: 500, fontSize: 42, lineHeight: 1.1,
-              letterSpacing: '0.005em', color: '#ffffff', whiteSpace: 'nowrap',
+              fontWeight: 500,
+              fontSize: m ? 26 : 42,
+              lineHeight: 1.1,
+              letterSpacing: '0.005em',
+              color: '#ffffff',
+              whiteSpace: m ? 'normal' : 'nowrap',
+              maxWidth: m ? '22ch' : 'none',
             }}>Carl Sandburg High School</div>
 
             <div style={{
-              marginTop: 18,
+              marginTop: m ? 10 : 18,
               fontFamily: "'Cormorant Garamond', serif",
-              fontStyle: 'italic', fontSize: 18,
+              fontStyle: 'italic',
+              fontSize: m ? 14 : 18,
               color: C.gold, letterSpacing: '0.02em',
             }}>Orland Park, Illinois</div>
 
             <div style={{
-              marginTop: 22,
-              display: 'flex', alignItems: 'center', gap: 14, justifyContent: 'center',
+              marginTop: m ? 14 : 22,
+              display: 'flex', alignItems: 'center', gap: m ? 8 : 14, justifyContent: 'center',
               color: 'rgba(248,250,252,0.9)',
-              fontSize: 12.5, letterSpacing: '0.42em', textTransform: 'uppercase',
+              fontSize: m ? 10 : 12.5,
+              letterSpacing: m ? '0.2em' : '0.42em',
+              textTransform: 'uppercase',
             }}>
-              <span style={{ width: 36, height: 1, background: 'rgba(251,191,36,0.7)', display: 'inline-block' }}/>
+              <span style={{ width: m ? 20 : 36, height: 1, background: 'rgba(251,191,36,0.7)', display: 'inline-block' }}/>
               FIRST Robotics Competition
-              <span style={{ width: 36, height: 1, background: 'rgba(251,191,36,0.7)', display: 'inline-block' }}/>
+              <span style={{ width: m ? 20 : 36, height: 1, background: 'rgba(251,191,36,0.7)', display: 'inline-block' }}/>
             </div>
 
-            <p style={{
-              marginTop: 26,
-              fontFamily: "'Cormorant Garamond', serif",
-              fontStyle: 'italic', fontSize: 19,
-              color: 'rgba(255,255,255,0.92)', letterSpacing: '0.01em',
-              maxWidth: '36ch', lineHeight: 1.4,
-            }}>"Nothing happens unless first we dream." — Carl Sandburg</p>
+            {/* Hide motto on mobile to keep the panel compact */}
+            {!m && (
+              <p style={{
+                marginTop: 26,
+                fontFamily: "'Cormorant Garamond', serif",
+                fontStyle: 'italic', fontSize: 19,
+                color: 'rgba(255,255,255,0.92)', letterSpacing: '0.01em',
+                maxWidth: '36ch', lineHeight: 1.4,
+              }}>"Nothing happens unless first we dream." — Carl Sandburg</p>
+            )}
           </div>
 
           {/* Footer */}
           <div style={{
-            display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: m ? 'center' : 'space-between',
+            gap: m ? 20 : 24,
+            flexWrap: 'wrap',
             color: 'rgba(248,250,252,0.85)',
-            fontSize: 11.5, letterSpacing: '0.18em', textTransform: 'uppercase',
+            fontSize: m ? 10 : 11.5,
+            letterSpacing: '0.18em', textTransform: 'uppercase',
+            marginTop: m ? 12 : 0,
           }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, whiteSpace: 'nowrap' }}>
-              <span style={{ color: C.gold, fontSize: 10.5, letterSpacing: '0.2em' }}>Team</span>
-              <span style={{
-                color: '#ffffff',
-                fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic',
-                textTransform: 'none', letterSpacing: '0.01em', fontSize: 15,
-              }}>FRC 3488</span>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, whiteSpace: 'nowrap', textAlign: 'center' }}>
-              <span style={{ color: C.gold, fontSize: 10.5, letterSpacing: '0.2em' }}>Follow</span>
-              <span style={{
-                color: '#ffffff',
-                fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic',
-                textTransform: 'none', letterSpacing: '0.01em', fontSize: 15,
-              }}>X: @EagleArmy3488</span>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, whiteSpace: 'nowrap', textAlign: 'right' }}>
-              <span style={{ color: C.gold, fontSize: 10.5, letterSpacing: '0.2em' }}>Season</span>
-              <span style={{
-                color: '#ffffff',
-                fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic',
-                textTransform: 'none', letterSpacing: '0.01em', fontSize: 15,
-              }}>MMXXVI</span>
-            </div>
+            {[
+              { label: 'Team', val: 'FRC 3488' },
+              { label: 'Follow', val: 'X: @EagleArmy3488' },
+              { label: 'Season', val: 'MMXXVI' },
+            ].map(item => (
+              <div key={item.label} style={{
+                display: 'flex', flexDirection: 'column', gap: 3,
+                whiteSpace: 'nowrap', textAlign: 'center',
+              }}>
+                <span style={{ color: C.gold, fontSize: m ? 9 : 10.5, letterSpacing: '0.2em' }}>{item.label}</span>
+                <span style={{
+                  color: '#ffffff',
+                  fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic',
+                  textTransform: 'none', letterSpacing: '0.01em', fontSize: m ? 13 : 15,
+                }}>{item.val}</span>
+              </div>
+            ))}
           </div>
         </aside>
 
         {/* ===== RIGHT: Form ===== */}
         <main style={{
           position: 'relative',
-          padding: '56px 64px',
+          padding: m ? '32px 24px' : '56px 64px',
           display: 'flex', flexDirection: 'column',
+          minHeight: m ? 'auto' : '100vh',
         }}>
-          {/* Top nav row */}
+          {/* Top nav */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
             <span style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
@@ -240,13 +261,13 @@ export default function Login() {
             flex: 1,
             display: 'flex', flexDirection: 'column', justifyContent: 'center',
             maxWidth: 460, margin: '0 auto', width: '100%',
-            padding: '32px 0',
+            padding: m ? '24px 0' : '32px 0',
           }}>
             <div style={{
               display: 'flex', alignItems: 'center', gap: 14,
               color: C.blue,
               fontSize: 11.5, letterSpacing: '0.32em', textTransform: 'uppercase',
-              marginBottom: 22,
+              marginBottom: 18,
             }}>
               <span style={{ width: 28, height: 1, background: C.blue, display: 'inline-block' }}/>
               Team Access
@@ -254,19 +275,22 @@ export default function Login() {
 
             <h1 style={{
               fontFamily: "'Cormorant Garamond', serif",
-              fontWeight: 500, fontSize: 54, lineHeight: 1.04,
+              fontWeight: 500,
+              fontSize: m ? 38 : 54,
+              lineHeight: 1.04,
               letterSpacing: '-0.01em', color: C.ink,
             }}>
               Welcome <em style={{ fontStyle: 'italic', color: C.blue }}>back</em>,<br/>Eagle.
             </h1>
+
             <p style={{
-              marginTop: 14, color: C.inkSoft,
-              fontSize: 15, lineHeight: 1.6, maxWidth: '42ch',
+              marginTop: 12, color: C.inkSoft,
+              fontSize: m ? 14 : 15, lineHeight: 1.6, maxWidth: '42ch',
             }}>
               Sign in to manage tasks, track build progress, coordinate your team, and stay on top of the season timeline.
             </p>
 
-            <form onSubmit={handleSubmit} style={{ marginTop: 36, display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <form onSubmit={handleSubmit} style={{ marginTop: m ? 24 : 36, display: 'flex', flexDirection: 'column', gap: 18 }}>
               {/* Username */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <label htmlFor="u" style={{
@@ -380,12 +404,13 @@ export default function Login() {
                     onChange={e => setRememberMe(e.target.checked)}
                     style={{
                       appearance: 'none', WebkitAppearance: 'none',
-                      width: 16, height: 16, border: `1px solid ${C.ruleStrong}`,
+                      width: 18, height: 18, border: `1px solid ${C.ruleStrong}`,
                       background: rememberMe ? C.blue : '#fff',
                       borderColor: rememberMe ? C.blue : C.ruleStrong,
                       cursor: 'pointer', borderRadius: 2,
                       display: 'inline-block', position: 'relative',
                       transition: 'background .15s, border-color .15s',
+                      flexShrink: 0,
                     }}
                   />
                   <span>Remember me</span>
@@ -416,7 +441,7 @@ export default function Login() {
                 type="submit"
                 disabled={loading}
                 style={{
-                  marginTop: 8, height: 54, width: '100%',
+                  marginTop: 6, height: 54, width: '100%',
                   background: loading ? C.blueDeep : C.blue,
                   color: '#ffffff',
                   border: 0, borderRadius: 2,
@@ -429,11 +454,11 @@ export default function Login() {
                   whiteSpace: 'nowrap',
                 }}
               >
-                <span>{loading ? 'Signing in…' : 'Sign in'}</span>
+                <span>{loading ? 'Signing in…' : 'Sign in'}</span>
                 {!loading && (
                   <span style={{ position: 'relative', width: 18, height: 1, background: C.gold, display: 'inline-block' }}>
                     <span style={{
-                      content: '', position: 'absolute', right: -1, top: -3,
+                      position: 'absolute', right: -1, top: -3,
                       width: 7, height: 7,
                       borderTop: `1px solid ${C.gold}`, borderRight: `1px solid ${C.gold}`,
                       transform: 'rotate(45deg)',
@@ -445,7 +470,7 @@ export default function Login() {
             </form>
 
             <p style={{
-              marginTop: 30, textAlign: 'center',
+              marginTop: 28, textAlign: 'center',
               color: C.inkSoft,
               fontFamily: "'Cormorant Garamond', serif",
               fontStyle: 'italic', fontSize: 16, letterSpacing: '0.01em',
@@ -456,7 +481,7 @@ export default function Login() {
                 onClick={() => setShowRequestAccess(true)}
                 style={{
                   background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-                  color: C.ink, textDecoration: 'none',
+                  color: C.ink,
                   borderBottom: `1px solid ${C.blue}`, paddingBottom: 1,
                   fontFamily: "'Inter', sans-serif", fontSize: 13.5,
                   letterSpacing: '0.04em', marginLeft: 6,
@@ -467,21 +492,26 @@ export default function Login() {
 
           {/* Footer */}
           <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24,
-            color: C.inkFaint, fontSize: 11.5, letterSpacing: '0.04em', whiteSpace: 'nowrap',
+            display: 'flex', alignItems: 'center',
+            justifyContent: m ? 'center' : 'space-between',
+            flexWrap: 'wrap', gap: m ? 8 : 24,
+            color: C.inkFaint, fontSize: 11.5, letterSpacing: '0.04em',
           }}>
             <div>© 2026 CSHS Robotics</div>
-            <div>
-              <a href="#" style={{ color: C.inkSoft, textDecoration: 'none' }}>Privacy</a>
-              <span style={{ display: 'inline-block', width: 3, height: 3, borderRadius: '50%', background: C.inkFaint, margin: '0 10px', verticalAlign: 'middle' }}/>
-              <a href="#" style={{ color: C.inkSoft, textDecoration: 'none' }}>Terms</a>
-              <span style={{ display: 'inline-block', width: 3, height: 3, borderRadius: '50%', background: C.inkFaint, margin: '0 10px', verticalAlign: 'middle' }}/>
-              <a href="#" style={{ color: C.inkSoft, textDecoration: 'none' }}>Code of Conduct</a>
-            </div>
+            {!m && (
+              <div>
+                <a href="#" style={{ color: C.inkSoft, textDecoration: 'none' }}>Privacy</a>
+                <span style={{ display: 'inline-block', width: 3, height: 3, borderRadius: '50%', background: C.inkFaint, margin: '0 10px', verticalAlign: 'middle' }}/>
+                <a href="#" style={{ color: C.inkSoft, textDecoration: 'none' }}>Terms</a>
+                <span style={{ display: 'inline-block', width: 3, height: 3, borderRadius: '50%', background: C.inkFaint, margin: '0 10px', verticalAlign: 'middle' }}/>
+                <a href="#" style={{ color: C.inkSoft, textDecoration: 'none' }}>Code of Conduct</a>
+              </div>
+            )}
           </div>
         </main>
 
       </div>
+
       {showRequestAccess && (
         <RequestAccessModal onClose={() => setShowRequestAccess(false)} />
       )}
