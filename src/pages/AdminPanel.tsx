@@ -55,6 +55,19 @@ function generateUsername(fullName: string, existingUsernames: string[]): string
   return `${base}${n}`
 }
 
+function matchTeamFromMessage(message: string | null, teams: Team[]): string {
+  if (!message || teams.length === 0) return ''
+  const lower = message.toLowerCase()
+  // Score each team by how many words from its name appear in the message
+  let best = '', bestScore = 0
+  for (const t of teams) {
+    const words = t.name.toLowerCase().split(/\s+/).filter(w => w.length > 2)
+    const score = words.reduce((s, w) => s + (lower.includes(w) ? 1 : 0), 0)
+    if (score > bestScore) { bestScore = score; best = t.id }
+  }
+  return best
+}
+
 function CreateUserModal({
   teams,
   existingUsernames,
@@ -66,14 +79,15 @@ function CreateUserModal({
   existingUsernames: string[]
   onClose: () => void
   onCreated: () => void
-  prefill?: { fullName: string; requestId?: string }
+  prefill?: { fullName: string; message?: string | null; requestId?: string }
 }) {
   const initialFullName = prefill?.fullName ?? ''
   const [form, setForm] = useState<CreateUserForm>({
     username: generateUsername(initialFullName, existingUsernames),
     fullName: initialFullName,
     role: 'student',
-    password: 'Monday99', confirmPassword: 'Monday99', teamId: '',
+    password: 'Monday99', confirmPassword: 'Monday99',
+    teamId: matchTeamFromMessage(prefill?.message ?? null, teams),
   })
   const [usernameEdited, setUsernameEdited] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -1045,7 +1059,7 @@ export default function AdminPanel() {
         <CreateUserModal
           teams={teams}
           existingUsernames={users.map(u => u.username)}
-          prefill={{ fullName: approveTarget.full_name, requestId: approveTarget.id }}
+          prefill={{ fullName: approveTarget.full_name, message: approveTarget.message, requestId: approveTarget.id }}
           onClose={() => setApproveTarget(null)}
           onCreated={async () => {
             await supabase.from('access_requests').update({ status: 'approved', reviewed_at: new Date().toISOString(), reviewed_by: currentUser?.id ?? null }).eq('id', approveTarget.id)
