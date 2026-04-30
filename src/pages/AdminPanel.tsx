@@ -42,21 +42,40 @@ function initials(name: string) {
 
 // ─── Create User Modal ────────────────────────────────────────────────────────
 
+function generateUsername(fullName: string, existingUsernames: string[]): string {
+  const parts = fullName.trim().toLowerCase().split(/\s+/).filter(Boolean)
+  if (parts.length < 2) return ''
+  const first = parts[0].replace(/[^a-z0-9]/g, '')
+  const last = parts[parts.length - 1].replace(/[^a-z0-9]/g, '')
+  if (!first || !last) return ''
+  const base = `${first}.${last}`
+  if (!existingUsernames.includes(base)) return base
+  let n = 2
+  while (existingUsernames.includes(`${base}${n}`)) n++
+  return `${base}${n}`
+}
+
 function CreateUserModal({
   teams,
+  existingUsernames,
   onClose,
   onCreated,
   prefill,
 }: {
   teams: Team[]
+  existingUsernames: string[]
   onClose: () => void
   onCreated: () => void
   prefill?: { fullName: string; requestId?: string }
 }) {
+  const initialFullName = prefill?.fullName ?? ''
   const [form, setForm] = useState<CreateUserForm>({
-    username: '', fullName: prefill?.fullName ?? '', role: 'student',
+    username: generateUsername(initialFullName, existingUsernames),
+    fullName: initialFullName,
+    role: 'student',
     password: 'Monday99', confirmPassword: 'Monday99', teamId: '',
   })
+  const [usernameEdited, setUsernameEdited] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -65,13 +84,23 @@ function CreateUserModal({
     setForm(f => ({ ...f, [key]: value }))
   }
 
+  function handleFullNameChange(value: string) {
+    setForm(f => {
+      const next = { ...f, fullName: value }
+      if (!usernameEdited) {
+        next.username = generateUsername(value, existingUsernames)
+      }
+      return next
+    })
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
 
     const username = form.username.toLowerCase().trim()
-    if (!/^[a-z0-9_]{3,20}$/.test(username)) {
-      setError('Username must be 3–20 characters: letters, numbers, underscore only.')
+    if (!/^[a-z][a-z0-9]*\.[a-z][a-z0-9]*(\d*)$/.test(username)) {
+      setError('Username must be in firstname.lastname format (e.g. john.smith).')
       return
     }
     if (!form.fullName.trim()) {
@@ -142,32 +171,33 @@ function CreateUserModal({
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {/* Username */}
+          {/* Display name — first so username auto-fills */}
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+              Full Name <span className="text-[#ba1a1a]">*</span>
+            </label>
+            <input
+              value={form.fullName}
+              onChange={e => handleFullNameChange(e.target.value)}
+              placeholder="e.g. Jordan Smith"
+              autoFocus
+              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
+            />
+          </div>
+
+          {/* Username — auto-generated, editable */}
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
               Username <span className="text-[#ba1a1a]">*</span>
             </label>
             <input
               value={form.username}
-              onChange={e => update('username', e.target.value)}
-              placeholder="e.g. jsmith (letters, numbers, _)"
+              onChange={e => { setUsernameEdited(true); update('username', e.target.value) }}
+              placeholder="firstname.lastname"
               autoCapitalize="none"
-              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
+              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20 font-mono"
             />
-            <p className="text-[10px] text-slate-400 mt-1">3–20 chars, lowercase letters / numbers / underscore</p>
-          </div>
-
-          {/* Display name */}
-          <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-              Display Name <span className="text-[#ba1a1a]">*</span>
-            </label>
-            <input
-              value={form.fullName}
-              onChange={e => update('fullName', e.target.value)}
-              placeholder="e.g. Jordan Smith"
-              className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
-            />
+            <p className="text-[10px] text-slate-400 mt-1">Auto-filled from name · edit if needed · duplicates get a number suffix</p>
           </div>
 
           {/* Role */}
@@ -999,6 +1029,7 @@ export default function AdminPanel() {
       {showCreate && (
         <CreateUserModal
           teams={teams}
+          existingUsernames={users.map(u => u.username)}
           onClose={() => setShowCreate(false)}
           onCreated={load}
         />
@@ -1013,6 +1044,7 @@ export default function AdminPanel() {
       {approveTarget && (
         <CreateUserModal
           teams={teams}
+          existingUsernames={users.map(u => u.username)}
           prefill={{ fullName: approveTarget.full_name, requestId: approveTarget.id }}
           onClose={() => setApproveTarget(null)}
           onCreated={async () => {
