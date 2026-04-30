@@ -202,13 +202,26 @@ export default function Login() {
         minHeight: m ? 'auto' : '100vh',
       }}>
         {/* Top nav */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
-          <img
-            src="/eagle-army-logo.png"
-            alt="Eagle Army"
-            style={{ height: m ? 56 : 80, width: 'auto', objectFit: 'contain', display: 'block' }}
-            onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
-          />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            color: C.blue,
+            fontFamily: "'Inter', sans-serif",
+            fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase',
+            fontWeight: 500,
+          }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.goldDeep} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 2v4"/>
+              <circle cx="12" cy="2" r="0.8" fill={C.goldDeep}/>
+              <rect x="4" y="6" width="16" height="12" rx="3"/>
+              <circle cx="9" cy="12" r="1.2" fill={C.goldDeep}/>
+              <circle cx="15" cy="12" r="1.2" fill={C.goldDeep}/>
+              <path d="M9 16h6"/>
+              <path d="M2 13v2"/>
+              <path d="M22 13v2"/>
+            </svg>
+            Robotics Portal
+          </span>
         </div>
 
         {/* Form body */}
@@ -228,15 +241,28 @@ export default function Login() {
             Team Access
           </div>
 
-          <h1 style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontWeight: 500,
-            fontSize: m ? 38 : 54,
-            lineHeight: 1.04,
-            letterSpacing: '-0.01em', color: C.ink,
-          }}>
-            Welcome <em style={{ fontStyle: 'italic', color: C.blue }}>back</em>,<br/>Eagle.
-          </h1>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+            <h1 style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontWeight: 500,
+              fontSize: m ? 38 : 54,
+              lineHeight: 1.04,
+              letterSpacing: '-0.01em', color: C.ink,
+              margin: 0,
+            }}>
+              Welcome <em style={{ fontStyle: 'italic', color: C.blue }}>back</em>,<br/>Eagle.
+            </h1>
+            <img
+              src="/eagle-army-logo.png"
+              alt="Eagle Army"
+              style={{
+                height: m ? 76 : 108,
+                width: 'auto', objectFit: 'contain',
+                display: 'block', flexShrink: 0,
+              }}
+              onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+            />
+          </div>
 
           <p style={{
             marginTop: 12, color: C.inkSoft,
