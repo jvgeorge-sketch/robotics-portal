@@ -7,7 +7,6 @@ interface Props {
 
 export default function RequestAccessModal({ onClose }: Props) {
   const [fullName, setFullName] = useState('')
-  const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -16,14 +15,13 @@ export default function RequestAccessModal({ onClose }: Props) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!fullName.trim()) { setError('Full name is required'); return }
-    if (!email.trim()) { setError('Email is required'); return }
 
     setSaving(true)
     setError('')
 
     const { error: dbErr } = await supabase.from('access_requests').insert({
       full_name: fullName.trim(),
-      email: email.trim(),
+      email: '',
       message: message.trim() || null,
       status: 'pending',
     })
@@ -78,21 +76,6 @@ export default function RequestAccessModal({ onClose }: Props) {
                 value={fullName}
                 onChange={e => { setFullName(e.target.value); setError('') }}
                 placeholder="e.g. Alex Johnson"
-                required
-                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
-              />
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                Email <span className="text-[#ba1a1a]">*</span>
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={e => { setEmail(e.target.value); setError('') }}
-                placeholder="you@example.com"
                 required
                 className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/20"
               />
